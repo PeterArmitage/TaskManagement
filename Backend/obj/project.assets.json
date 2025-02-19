@@ -5146,11 +5146,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ficoc\\OneDrive\\Desktop\\Projects\\TaskManagementSystem\\TaskManagementSystem.API\\TaskManagementSystem.API.csproj",
+      "projectUniqueName": "C:\\Users\\ficoc\\OneDrive\\Desktop\\Projects\\TaskManagementSystem\\backend\\TaskManagementSystem.API.csproj",
       "projectName": "TaskManagementSystem.API",
-      "projectPath": "C:\\Users\\ficoc\\OneDrive\\Desktop\\Projects\\TaskManagementSystem\\TaskManagementSystem.API\\TaskManagementSystem.API.csproj",
+      "projectPath": "C:\\Users\\ficoc\\OneDrive\\Desktop\\Projects\\TaskManagementSystem\\backend\\TaskManagementSystem.API.csproj",
       "packagesPath": "C:\\Users\\ficoc\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ficoc\\OneDrive\\Desktop\\Projects\\TaskManagementSystem\\TaskManagementSystem.API\\obj\\",
+      "outputPath": "C:\\Users\\ficoc\\OneDrive\\Desktop\\Projects\\TaskManagementSystem\\backend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

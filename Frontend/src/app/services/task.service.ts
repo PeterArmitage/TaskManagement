@@ -20,11 +20,12 @@ export class TaskService {
   }
 
   createTask(task: TaskItem): Observable<TaskItem> {
+    console.log('Sending task to backend:', task);
     return this.http.post<TaskItem>(this.apiUrl, task);
   }
 
   updateTask(task: TaskItem): Observable<TaskItem> {
-    return this.http.put<TaskItem>(`${this.apiUrl}/${task.Id}`, task);
+    return this.http.put<TaskItem>(`${this.apiUrl}/${task.id}`, task);
   }
 
   deleteTask(id: number): Observable<void> {

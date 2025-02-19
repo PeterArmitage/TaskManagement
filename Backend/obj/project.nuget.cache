@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "doBndPKtswI=",
+  "dgSpecHash": "b4duNks9qK0=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ficoc\\OneDrive\\Desktop\\Projects\\TaskManagementSystem\\TaskManagementSystem.API\\TaskManagementSystem.API.csproj",
+  "projectFilePath": "C:\\Users\\ficoc\\OneDrive\\Desktop\\Projects\\TaskManagementSystem\\backend\\TaskManagementSystem.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ficoc\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\ficoc\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

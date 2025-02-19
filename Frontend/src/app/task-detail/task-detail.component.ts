@@ -25,11 +25,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 })
 export class TaskDetailComponent implements OnInit {
   task: TaskItem = {
-    Id: 0,
-    Title: '',
-    Description: '',
-    IsCompleted: false,
-    DueDate: new Date(),
+    id: 0,
+    title: '',
+    description: '',
+    isCompleted: false,
+    dueDate: new Date(),
   };
 
   constructor(
@@ -48,7 +48,12 @@ export class TaskDetailComponent implements OnInit {
   }
 
   saveTask(): void {
-    this.taskService.updateTask(this.task).subscribe(() => {
+    const formattedTask = {
+      ...this.task,
+      DueDate: new Date(this.task.dueDate),
+    };
+
+    this.taskService.updateTask(formattedTask).subscribe(() => {
       this.router.navigate(['/']);
     });
   }

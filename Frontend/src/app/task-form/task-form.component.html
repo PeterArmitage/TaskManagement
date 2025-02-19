@@ -6,19 +6,19 @@
     
       <mat-form-field appearance="fill">
         <mat-label>Title</mat-label>
-        <input matInput [(ngModel)]="task.Title" />
+        <input matInput [(ngModel)]="task.title" name="title" />
       </mat-form-field>
   
       
       <mat-form-field appearance="fill">
         <mat-label>Description</mat-label>
-        <textarea matInput [(ngModel)]="task.Description"></textarea>
+        <textarea matInput [(ngModel)]="task.description" name="description"></textarea>
       </mat-form-field>
   
  
       <mat-form-field appearance="fill">
         <mat-label>Due Date</mat-label>
-        <input matInput type="date" [(ngModel)]="task.DueDate" />
+        <input matInput type="date" [(ngModel)]="task.dueDate" name="dueDate" />
       </mat-form-field>
     </mat-card-content>
     <mat-card-actions>

@@ -6,17 +6,31 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+  ],
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.css'],
 })
 export class TaskListComponent implements OnInit {
   tasks: TaskItem[] = [];
-  displayedColumns: string[] = ['title', 'actions'];
+  task: TaskItem = {
+    id: 0,
+    title: '',
+    description: '',
+    dueDate: new Date(),
+    isCompleted: false,
+  };
+  displayedColumns: string[] = ['title', 'description', 'actions'];
 
   constructor(
     private taskService: TaskService,
@@ -34,20 +48,33 @@ export class TaskListComponent implements OnInit {
   }
 
   editTask(task: TaskItem): void {
-    // Navigate to the task detail page with the task ID
-    this.router.navigate(['/task', task.Id]);
+    if (task && task.id) {
+      this.router.navigate(['/task', task.id]);
+    } else {
+      console.error('Task ID is undefined:', task);
+    }
   }
 
   deleteTask(id: number): void {
-    if (confirm('Are you sure you want to delete this task?')) {
-      this.taskService.deleteTask(id).subscribe(() => {
-        // Reload the task list after deletion
-        this.loadTasks();
-      });
+    if (id) {
+      if (confirm('Are you sure you want to delete this task?')) {
+        this.taskService.deleteTask(id).subscribe(() => {
+          this.loadTasks();
+        });
+      }
+    } else {
+      console.error('Task ID is undefined:', id);
     }
   }
 
   addTask(): void {
     this.router.navigate(['/add']);
+  }
+
+  saveTask(): void {
+    this.taskService.createTask(this.task).subscribe(() => {
+      this.loadTasks();
+      this.router.navigate(['/']);
+    });
   }
 }

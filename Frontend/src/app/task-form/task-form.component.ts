@@ -25,11 +25,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 })
 export class TaskFormComponent {
   task: TaskItem = {
-    Id: 0,
-    Title: '',
-    Description: '',
-    IsCompleted: false,
-    DueDate: new Date(),
+    id: 0,
+    title: '',
+    description: '',
+    isCompleted: false,
+    dueDate: new Date(),
   };
 
   constructor(
@@ -38,13 +38,17 @@ export class TaskFormComponent {
   ) {}
 
   saveTask(): void {
-    // Add the new task to the backend
-    this.taskService.createTask(this.task).subscribe(() => {
-      // Navigate back to the task list after saving
-      this.router.navigate(['/']);
+    const formattedTask = {
+      ...this.task,
+      dueDate: new Date(this.task.dueDate),
+    };
+
+    this.taskService.createTask(formattedTask).subscribe(() => {
+      this.router.navigate(['/']).then(() => {
+        window.location.reload(); // Force refresh the page
+      });
     });
   }
-
   cancel(): void {
     // Navigate back to the task list without saving
     this.router.navigate(['/']);
