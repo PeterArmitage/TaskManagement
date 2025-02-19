@@ -155,3 +155,4 @@ C:\Users\ficoc\OneDrive\Desktop\Projects\TaskManagementSystem\TaskManagementSyst
 C:\Users\ficoc\OneDrive\Desktop\Projects\TaskManagementSystem\TaskManagementSystem.API\obj\Debug\net9.0\TaskManagementSystem.API.pdb
 C:\Users\ficoc\OneDrive\Desktop\Projects\TaskManagementSystem\TaskManagementSystem.API\obj\Debug\net9.0\TaskManagementSystem.API.genruntimeconfig.cache
 C:\Users\ficoc\OneDrive\Desktop\Projects\TaskManagementSystem\TaskManagementSystem.API\obj\Debug\net9.0\ref\TaskManagementSystem.API.dll
+C:\Users\ficoc\OneDrive\Desktop\Projects\TaskManagementSystem\TaskManagementSystem.API\obj\Debug\net9.0\TaskManagementSystem.API.sourcelink.json
