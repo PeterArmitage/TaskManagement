@@ -29,7 +29,7 @@ export class TaskDetailComponent implements OnInit {
     title: '',
     description: '',
     isCompleted: false,
-    dueDate: new Date(),
+    dueDate: new Date().toISOString().split('T')[0],
   };
 
   constructor(

@@ -29,28 +29,29 @@ export class TaskFormComponent {
     title: '',
     description: '',
     isCompleted: false,
-    dueDate: new Date(),
+    dueDate: new Date().toISOString().split('T')[0], // Default to today's date
   };
 
-  constructor(
-    private router: Router, // To navigate back to the task list
-    private taskService: TaskService // To add a new task
-  ) {}
+  constructor(private router: Router, private taskService: TaskService) {}
 
   saveTask(): void {
     const formattedTask = {
       ...this.task,
-      dueDate: new Date(this.task.dueDate),
+      dueDate: this.task.dueDate, // Keep it as a string
     };
 
-    this.taskService.createTask(formattedTask).subscribe(() => {
-      this.router.navigate(['/']).then(() => {
-        window.location.reload(); // Force refresh the page
-      });
+    this.taskService.createTask(formattedTask).subscribe({
+      next: () => {
+        this.router.navigate(['/tasks']); // Navigate to the task list after saving
+      },
+      error: (err) => {
+        console.error('Error creating task:', err);
+        alert('Failed to create task. Please try again.');
+      },
     });
   }
+
   cancel(): void {
-    // Navigate back to the task list without saving
-    this.router.navigate(['/']);
+    this.router.navigate(['/tasks']); // Navigate back to the task list
   }
 }

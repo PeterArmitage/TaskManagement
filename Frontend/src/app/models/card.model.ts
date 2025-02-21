@@ -1,7 +1,7 @@
-export interface TaskItem {
+export interface Card {
   id: number;
   title: string;
   description: string;
-  isCompleted: boolean;
   dueDate: string;
+  listId: number;
 }

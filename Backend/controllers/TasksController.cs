@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TaskManagementSystem.API.Data;
-using TaskManagementSystem.API.Models;
+using Backend.Data;
+using Backend.Models;
 
-namespace TaskManagementSystem.API.Controllers
+namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -28,12 +28,10 @@ namespace TaskManagementSystem.API.Controllers
         public async Task<ActionResult<TaskItem>> GetTask(int id)
         {
             var task = await _context.Tasks.FindAsync(id);
-
             if (task == null)
             {
                 return NotFound();
             }
-
             return task;
         }
 
@@ -41,6 +39,17 @@ namespace TaskManagementSystem.API.Controllers
         [HttpPost]
         public async Task<ActionResult<TaskItem>> CreateTask(TaskItem task)
         {
+            if (task == null)
+            {
+                return BadRequest("Task is null.");
+            }
+
+            // Ensure DueDate is in the correct format (e.g., "yyyy-MM-dd")
+            if (!DateTime.TryParse(task.DueDate, out _))
+            {
+                return BadRequest("Invalid DueDate format. Use 'yyyy-MM-dd'.");
+            }
+
             _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
 

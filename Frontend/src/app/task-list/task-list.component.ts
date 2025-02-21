@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-task-list',
@@ -17,6 +18,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
+    RouterModule,
   ],
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.css'],
@@ -27,7 +29,7 @@ export class TaskListComponent implements OnInit {
     id: 0,
     title: '',
     description: '',
-    dueDate: new Date(),
+    dueDate: new Date().toISOString().split('T')[0],
     isCompleted: false,
   };
   displayedColumns: string[] = ['title', 'description', 'actions'];
