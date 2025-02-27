@@ -1,15 +1,29 @@
+# Task Management System
 
-Learning Focus
-Developed as a learning project to master:
-🅰️ Angular framework fundamentals (Components, Services, RxJS)
-⚙️ .NET Web API development with Entity Framework Core
-🔗 Frontend-Backend integration patterns (JWT authentication, HTTP interceptors)
-🎨 Modern CSS/SCSS practices including flexbox layouts and responsive design
-📦 Dependency injection and modular architecture in both frameworks
+This project is a full-stack web application built as a learning project to explore and gain experience with Angular, C#, and .NET technologies. It provides a simple task management system where users can create, organize, and track their tasks.
 
+## Key Features
+- **Frontend**: Built with Angular 19 using Material Design components  
+- **Backend**: REST API built with ASP.NET Core 9.0  
+- **Database**: SQL Server with Entity Framework Core for data persistence  
+- **API Documentation**: Swagger/OpenAPI integration for API exploration  
 
-Technical Highlights
-Developed RESTful endpoints with C# using controller-service-repository pattern
-Configured cross-origin resource sharing (CORS) and security middleware
-Utilized Angular's reactive forms and validation mechanisms
-Optimized API responses with DTOs and LINQ queries
+## Technologies Used
+- **Frontend**: Angular, TypeScript, SCSS  
+- **Backend**: C#, ASP.NET Core, Entity Framework Core  
+- **Database**: SQL Server  
+- **Tools**: Swagger, Angular CLI, .NET CLI  
+
+## Project Structure
+The project is divided into two main components:  
+1. **Frontend**: Angular application (see `Frontend/README.md` for setup instructions)  
+2. **Backend**: ASP.NET Core Web API (see `Backend/Program.cs` for API configuration)  
+
+## Learning Objectives
+This project was developed primarily as a learning exercise to:  
+- Understand Angular's component-based architecture  
+- Explore .NET Core's Web API capabilities  
+- Practice implementing RESTful APIs  
+- Learn about CORS configuration and API security  
+- Gain experience with Entity Framework Core and database migrations  
+
