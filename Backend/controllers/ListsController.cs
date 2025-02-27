@@ -41,12 +41,32 @@ namespace Backend.Controllers
 
         // POST: api/lists
         [HttpPost]
-        public async Task<ActionResult<List>> CreateList(List list)
+        public async Task<ActionResult<List>> CreateList([FromBody] List list)
         {
-            _context.Lists.Add(list);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction(nameof(GetList), new { id = list.Id }, list);
+            try
+            {
+                var board = await _context.Boards.FindAsync(list.BoardId);
+                if (board == null) return NotFound($"Board with ID {list.BoardId} not found");
+
+                _context.Lists.Add(new List
+                {
+                    Name = list.Name,
+                    BoardId = list.BoardId
+                });
+                
+                await _context.SaveChangesAsync();
+                return Ok(list);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         // PUT: api/lists/5

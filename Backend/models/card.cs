@@ -7,6 +7,6 @@ namespace Backend.Models
         public required string Description { get; set; }
         public DateTime DueDate { get; set; }
         public int ListId { get; set; }
-        public required List List { get; set; }
+        public List? List { get; set; }
     }
 }

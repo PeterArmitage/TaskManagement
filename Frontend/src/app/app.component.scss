@@ -1,20 +1,34 @@
 .sidenav-container {
-  height: 100vh; 
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: black;
 }
 
 mat-sidenav {
-  width: 250px; 
+  width: 250px;
+  height: 100%;
+}
+
+mat-sidenav-content {
+  display: flex;
+  flex-direction: column;
+  background-color: black;
+  min-height: 100vh;
 }
 
 mat-toolbar {
-  display: flex;
-  justify-content: space-between;
+  flex-shrink: 0; 
 }
 
 .content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   padding: 20px;
+  overflow-y: auto;
+  background-color: black;
 }
 
-.close-button {
-  margin-left: auto; 
-}

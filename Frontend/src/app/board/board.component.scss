@@ -1,0 +1,22 @@
+.board-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  overflow-y: auto; /* Enable scrolling if content overflows */
+ 
+}
+
+.board-list {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+  background-color: black;
+}
+
+.board-card {
+  width: 300px;
+}

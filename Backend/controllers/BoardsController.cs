@@ -20,7 +20,11 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Board>>> GetBoards()
         {
-            return await _context.Boards.Include(b => b.Lists).ToListAsync();
+            return await _context.Boards
+                .Include(b => b.Lists)
+                    .ThenInclude(l => l.Cards)
+                .AsSplitQuery()
+                .ToListAsync();
         }
 
         // GET: api/boards/5

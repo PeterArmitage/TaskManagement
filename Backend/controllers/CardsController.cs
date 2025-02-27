@@ -39,12 +39,27 @@ namespace Backend.Controllers
 
         // POST: api/cards
         [HttpPost]
-        public async Task<ActionResult<Card>> CreateCard(Card card)
+        public async Task<ActionResult<Card>> CreateCard([FromBody] Card card)
         {
-            _context.Cards.Add(card);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction(nameof(GetCard), new { id = card.Id }, card);
+            try
+            {
+                var list = await _context.Lists.FindAsync(card.ListId);
+                if (list == null) return NotFound($"List with ID {card.ListId} not found");
+
+                _context.Cards.Add(card);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetCard), new { id = card.Id }, card);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         // PUT: api/cards/5

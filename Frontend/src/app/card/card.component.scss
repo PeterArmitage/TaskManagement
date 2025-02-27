@@ -1,0 +1,25 @@
+.card-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  }
+  
+  h2 {
+    color: #3f51b5; /* Primary color */
+    margin-bottom: 20px;
+  }
+  
+  .card-list {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .card-card {
+    width: 300px;
+  }

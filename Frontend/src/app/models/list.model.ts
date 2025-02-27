@@ -4,5 +4,6 @@ export interface List {
   id: number;
   name: string;
   boardId: number;
-  cards: Card[];
+  board?: { id: number };
+  cards?: Card[];
 }

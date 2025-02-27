@@ -1,0 +1,19 @@
+<div class="card-container">
+    <h2>Cards</h2>
+    <button mat-raised-button color="primary" [routerLink]="['/lists', listId, 'cards', 'add']">Create Card</button>
+    <div class="card-list">
+      <mat-card *ngFor="let card of cards" class="card-card">
+        <mat-card-header>
+          <mat-card-title>{{ card.title }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ card.description }}</p>
+          <p>Due: {{ card.dueDate }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button [routerLink]="['/cards', card.id]">Open</button>
+          <button mat-button color="warn" (click)="deleteCard(card.id)">Delete</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
