@@ -1,30 +1,40 @@
 <mat-sidenav-container class="sidenav-container">
   <!-- Sidenav -->
-  <mat-sidenav #sidenav mode="side" [(opened)]="isSidenavOpen">
-    <mat-toolbar color="primary">
-      <span>Menu</span>
-      <button mat-icon-button (click)="sidenav.toggle()" class="close-button">
-        <mat-icon>close</mat-icon>
+  <mat-sidenav #sidenav 
+               mode="side" 
+               [style.width.px]="isExpanded ? 250 : 60"
+               opened>
+    <mat-toolbar color="primary" class="sidenav-toolbar">
+      <button mat-icon-button (click)="toggleSidebar()">
+        <mat-icon>{{ isExpanded ? 'chevron_left' : 'chevron_right' }}</mat-icon>
       </button>
+      <span class="full-text" *ngIf="isExpanded">Menu</span>
     </mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item routerLink="/">Home</a>
-      <a mat-list-item routerLink="/boards">Boards</a>
-      <a mat-list-item routerLink="/boards/add">Add Board</a>
+      <a mat-list-item routerLink="/" (click)="expandSidebar()">
+        <mat-icon>home</mat-icon>
+        <span class="full-text" *ngIf="isExpanded">Home</span>
+      </a>
+      <a mat-list-item routerLink="/boards" (click)="expandSidebar()">
+        <mat-icon>dashboard</mat-icon>
+        <span class="full-text" *ngIf="isExpanded">Boards</span>
+      </a>
+      <a mat-list-item routerLink="/boards/add" (click)="expandSidebar()">
+        <mat-icon>add</mat-icon>
+        <span class="full-text" *ngIf="isExpanded">Add Board</span>
+      </a>
     </mat-nav-list>
   </mat-sidenav>
 
   <!-- Main Content -->
-  <mat-sidenav-content>
-    <!-- Toolbar -->
+  <mat-sidenav-content [style.margin-left.px]="isExpanded ? 250 : 60">
     <mat-toolbar color="primary">
-      <button mat-icon-button (click)="sidenav.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
+     
+       
+      
       <span>{{ title }}</span>
     </mat-toolbar>
 
-    <!-- Router Outlet -->
     <div class="content">
       <router-outlet></router-outlet>
     </div>

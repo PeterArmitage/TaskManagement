@@ -8,8 +8,20 @@
 }
 
 mat-sidenav {
-  width: 250px;
-  height: 100%;
+  transition: width 0.3s ease;
+  background-color: #1A1A1A;
+  
+  .sidenav-toolbar {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 16px;
+    
+    button {
+      margin-right: 16px;
+    }
+  }
 }
 
 mat-sidenav-content {
@@ -17,18 +29,40 @@ mat-sidenav-content {
   flex-direction: column;
   background-color: black;
   min-height: 100vh;
+  transition: margin-left 0.3s ease;
+
+  mat-toolbar {
+    .menu-button {
+      margin-right: 16px;
+    }
+  }
 }
 
-mat-toolbar {
-  flex-shrink: 0; 
+mat-nav-list {
+  padding: 0;
+  
+  a.mat-list-item {
+    color: white;
+    height: 48px;
+    
+    mat-icon {
+      margin-right: 16px;
+    }
+    
+    &:hover {
+      background-color: #333;
+    }
+  }
 }
 
 .content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  margin-top: 64px;
+  padding: 24px;
   overflow-y: auto;
-  background-color: black;
+  @media (max-width: 599px) {
+    margin-top: 56px; 
+  }
 }
-
