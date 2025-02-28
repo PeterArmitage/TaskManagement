@@ -12,14 +12,14 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, MatCardModule, MatButtonModule, RouterModule],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.css'],
+  styleUrls: ['./list.component.scss'],
 })
 export class ListComponent implements OnInit {
   lists: List[] = [];
   boardId: number;
 
   constructor(private listService: ListService, private route: ActivatedRoute) {
-    this.boardId = +this.route.snapshot.params['id']; // Get the board ID from the route
+    this.boardId = +this.route.snapshot.params['id'];
   }
 
   ngOnInit(): void {
@@ -35,7 +35,7 @@ export class ListComponent implements OnInit {
   deleteList(id: number): void {
     if (confirm('Are you sure you want to delete this list?')) {
       this.listService.deleteList(id).subscribe(() => {
-        this.loadLists(); // Reload the lists after deletion
+        this.loadLists();
       });
     }
   }

@@ -20,7 +20,7 @@ import { NgIf } from '@angular/common';
     NgIf,
   ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'Task Management System';

@@ -21,7 +21,7 @@ import { RouterModule } from '@angular/router';
     RouterModule,
   ],
   templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.css'],
+  styleUrls: ['./task-list.component.scss'],
 })
 export class TaskListComponent implements OnInit {
   tasks: TaskItem[] = [];
@@ -34,10 +34,7 @@ export class TaskListComponent implements OnInit {
   };
   displayedColumns: string[] = ['title', 'description', 'actions'];
 
-  constructor(
-    private taskService: TaskService,
-    private router: Router // Inject Router for navigation
-  ) {}
+  constructor(private taskService: TaskService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadTasks();

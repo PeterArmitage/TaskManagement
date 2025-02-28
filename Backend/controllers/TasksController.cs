@@ -16,14 +16,14 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        // GET: api/tasks
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasks()
         {
             return await _context.Tasks.ToListAsync();
         }
 
-        // GET: api/tasks/5
+        
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskItem>> GetTask(int id)
         {
@@ -35,7 +35,7 @@ namespace Backend.Controllers
             return task;
         }
 
-        // POST: api/tasks
+        
         [HttpPost]
         public async Task<ActionResult<TaskItem>> CreateTask(TaskItem task)
         {
@@ -44,7 +44,7 @@ namespace Backend.Controllers
                 return BadRequest("Task is null.");
             }
 
-            // Ensure DueDate is in the correct format (e.g., "yyyy-MM-dd")
+            
             if (!DateTime.TryParse(task.DueDate, out _))
             {
                 return BadRequest("Invalid DueDate format. Use 'yyyy-MM-dd'.");
@@ -56,7 +56,7 @@ namespace Backend.Controllers
             return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
         }
 
-        // PUT: api/tasks/5
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(int id, TaskItem task)
         {
@@ -86,7 +86,7 @@ namespace Backend.Controllers
             return NoContent();
         }
 
-        // DELETE: api/tasks/5
+       
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {

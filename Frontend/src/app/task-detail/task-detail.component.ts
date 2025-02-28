@@ -21,7 +21,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatFormFieldModule,
   ],
   templateUrl: './task-detail.component.html',
-  styleUrls: ['./task-detail.component.css'],
+  styleUrls: ['./task-detail.component.scss'],
 })
 export class TaskDetailComponent implements OnInit {
   task: TaskItem = {

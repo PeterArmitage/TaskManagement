@@ -19,7 +19,7 @@ import { CommonModule } from '@angular/common';
     ReactiveFormsModule,
   ],
   templateUrl: './card-form.component.html',
-  styleUrls: ['./card-form.component.css'],
+  styleUrls: ['./card-form.component.scss'],
 })
 export class CardFormComponent {
   cardForm: FormGroup;

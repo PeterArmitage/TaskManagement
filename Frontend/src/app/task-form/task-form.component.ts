@@ -21,7 +21,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatFormFieldModule,
   ],
   templateUrl: './task-form.component.html',
-  styleUrls: ['./task-form.component.css'],
+  styleUrls: ['./task-form.component.scss'],
 })
 export class TaskFormComponent {
   task: TaskItem = {
@@ -29,7 +29,7 @@ export class TaskFormComponent {
     title: '',
     description: '',
     isCompleted: false,
-    dueDate: new Date().toISOString().split('T')[0], // Default to today's date
+    dueDate: new Date().toISOString().split('T')[0],
   };
 
   constructor(private router: Router, private taskService: TaskService) {}
@@ -37,12 +37,12 @@ export class TaskFormComponent {
   saveTask(): void {
     const formattedTask = {
       ...this.task,
-      dueDate: this.task.dueDate, // Keep it as a string
+      dueDate: this.task.dueDate,
     };
 
     this.taskService.createTask(formattedTask).subscribe({
       next: () => {
-        this.router.navigate(['/tasks']); // Navigate to the task list after saving
+        this.router.navigate(['/tasks']);
       },
       error: (err) => {
         console.error('Error creating task:', err);
@@ -52,6 +52,6 @@ export class TaskFormComponent {
   }
 
   cancel(): void {
-    this.router.navigate(['/tasks']); // Navigate back to the task list
+    this.router.navigate(['/tasks']);
   }
 }

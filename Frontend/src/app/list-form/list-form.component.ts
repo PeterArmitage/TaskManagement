@@ -19,7 +19,7 @@ import { CommonModule } from '@angular/common';
     ReactiveFormsModule,
   ],
   templateUrl: './list-form.component.html',
-  styleUrls: ['./list-form.component.css'],
+  styleUrls: ['./list-form.component.scss'],
 })
 export class ListFormComponent {
   listForm: FormGroup;
@@ -31,10 +31,10 @@ export class ListFormComponent {
     private route: ActivatedRoute,
     public router: Router
   ) {
-    this.boardId = +this.route.snapshot.params['id']; // Get the board ID from the route
+    this.boardId = +this.route.snapshot.params['id'];
     this.listForm = this.fb.group({
       name: ['', Validators.required],
-      boardId: [this.boardId], // Set the board ID
+      boardId: [this.boardId],
     });
   }
 

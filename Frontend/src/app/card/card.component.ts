@@ -12,14 +12,14 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, MatCardModule, MatButtonModule, RouterModule],
   templateUrl: './card.component.html',
-  styleUrls: ['./card.component.css'],
+  styleUrls: ['./card.component.scss'],
 })
 export class CardComponent implements OnInit {
   cards: Card[] = [];
   listId: number;
 
   constructor(private cardService: CardService, private route: ActivatedRoute) {
-    this.listId = +this.route.snapshot.params['id']; // Get the list ID from the route
+    this.listId = +this.route.snapshot.params['id'];
   }
 
   ngOnInit(): void {
@@ -28,14 +28,14 @@ export class CardComponent implements OnInit {
 
   loadCards(): void {
     this.cardService.getCards().subscribe((cards) => {
-      this.cards = cards.filter((card) => card.listId === this.listId); // Filter cards by list ID
+      this.cards = cards.filter((card) => card.listId === this.listId);
     });
   }
 
   deleteCard(id: number): void {
     if (confirm('Are you sure you want to delete this card?')) {
       this.cardService.deleteCard(id).subscribe(() => {
-        this.loadCards(); // Reload the cards after deletion
+        this.loadCards();
       });
     }
   }

@@ -9,6 +9,6 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, MatCardModule, MatButtonModule, RouterModule],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {}

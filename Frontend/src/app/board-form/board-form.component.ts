@@ -19,7 +19,7 @@ import { CommonModule } from '@angular/common';
     ReactiveFormsModule,
   ],
   templateUrl: './board-form.component.html',
-  styleUrls: ['./board-form.component.css'],
+  styleUrls: ['./board-form.component.scss'],
 })
 export class BoardFormComponent {
   boardForm: FormGroup;
