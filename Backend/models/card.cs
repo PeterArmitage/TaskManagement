@@ -8,5 +8,6 @@ namespace Backend.Models
         public DateTime DueDate { get; set; }
         public int ListId { get; set; }
         public List? List { get; set; }
+        public string Priority { get; set; }
     }
 }

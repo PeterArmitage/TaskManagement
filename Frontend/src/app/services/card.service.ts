@@ -27,6 +27,7 @@ export class CardService {
     description: string;
     dueDate: string;
     listId: number;
+    priority: 'low' | 'medium' | 'high';
   }): Observable<Card> {
     return this.http
       .post<Card>(this.apiUrl, {
@@ -34,6 +35,7 @@ export class CardService {
         description: card.description,
         dueDate: card.dueDate,
         listId: card.listId,
+        priority: card.priority,
       })
       .pipe(
         catchError((error) => {

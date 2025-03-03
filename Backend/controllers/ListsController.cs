@@ -20,7 +20,16 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<List>>> GetLists()
         {
-            return await _context.Lists.Include(l => l.Cards).ToListAsync();
+            return await _context.Lists
+                .Include(l => l.Cards)
+                .Select(l => new List
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    BoardId = l.BoardId,
+                    Cards = l.Cards
+                })
+                .ToListAsync();
         }
 
         // GET: api/lists/5

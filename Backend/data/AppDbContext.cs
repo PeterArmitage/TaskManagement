@@ -18,5 +18,14 @@ namespace Backend.Data
         {
             _configuration = configuration;
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<List>()
+                .HasMany(l => l.Cards)
+                .WithOne(c => c.List)
+                .HasForeignKey(c => c.ListId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

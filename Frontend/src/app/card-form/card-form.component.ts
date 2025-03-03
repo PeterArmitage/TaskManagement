@@ -9,7 +9,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { Card } from '../models/card.model';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-card-form',
@@ -22,6 +23,8 @@ import { Card } from '../models/card.model';
     ReactiveFormsModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatOptionModule,
+    MatSelectModule,
   ],
   templateUrl: './card-form.component.html',
   styleUrls: ['./card-form.component.scss'],
@@ -42,8 +45,9 @@ export class CardFormComponent implements OnInit {
     this.cardForm = this.fb.group({
       title: ['', Validators.required],
       description: [''],
-      dueDate: [''],
+      dueDate: [null],
       listId: [this.listId],
+      priority: ['medium', Validators.required],
     });
   }
 
@@ -76,6 +80,7 @@ export class CardFormComponent implements OnInit {
         description: this.cardForm.value.description,
         dueDate: new Date(this.cardForm.value.dueDate).toISOString(),
         listId: this.listId,
+        priority: this.cardForm.value.priority,
       };
 
       const operation =

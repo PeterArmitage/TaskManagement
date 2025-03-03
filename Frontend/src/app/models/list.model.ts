@@ -5,5 +5,7 @@ export interface List {
   name: string;
   boardId: number;
   board?: { id: number };
-  cards?: Card[];
+  cards?: {
+    $values: Card[];
+  };
 }

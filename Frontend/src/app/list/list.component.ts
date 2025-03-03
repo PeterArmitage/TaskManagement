@@ -20,6 +20,7 @@ export class ListComponent implements OnInit {
 
   constructor(private listService: ListService, private route: ActivatedRoute) {
     this.boardId = +this.route.snapshot.params['id'];
+    console.log('Initial boardId:', this.boardId);
   }
 
   ngOnInit(): void {
@@ -28,7 +29,15 @@ export class ListComponent implements OnInit {
 
   loadLists(): void {
     this.listService.getLists().subscribe((response) => {
-      this.lists = response.filter((list) => list.boardId === this.boardId);
+      console.log('Lists response:', response);
+      console.log('Current boardId:', this.boardId);
+
+      this.lists = response
+        .filter((list) => list.boardId === this.boardId)
+        .map((list) => ({
+          ...list,
+          cards: { $values: list.cards?.$values || [] },
+        }));
     });
   }
 

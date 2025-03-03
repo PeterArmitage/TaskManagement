@@ -27,6 +27,16 @@
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
   
+        <!-- Add this section after the due date field -->
+        <mat-form-field appearance="fill">
+          <mat-label>Priority</mat-label>
+          <mat-select formControlName="priority">
+            <mat-option value="low" class="low">Low (Green)</mat-option>
+            <mat-option value="medium" class="medium">Medium (Amber)</mat-option>
+            <mat-option value="high" class="high">High (Red)</mat-option>
+          </mat-select>
+        </mat-form-field>
+  
         <!-- Submit Button -->
         <button mat-raised-button color="primary" type="submit">Save</button>
         <button mat-raised-button color="warn" type="button" (click)="router.navigate(['/lists', listId, 'cards'])">Cancel</button>

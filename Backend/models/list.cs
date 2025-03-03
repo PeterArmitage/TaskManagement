@@ -17,6 +17,8 @@ namespace Backend.Models
         
         [JsonIgnore]
         public Board? Board { get; set; }
+
+        [JsonPropertyName("cards")]
         public List<Card> Cards { get; set; } = new List<Card>();
     }
 }

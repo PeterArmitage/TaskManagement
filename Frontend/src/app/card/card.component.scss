@@ -23,3 +23,23 @@
   .card-card {
     width: 300px;
   }
+
+.priority-label {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.8rem;
+  margin-right: 8px;
+
+  &.low {
+    background-color: #4CAF50; // Green
+  }
+
+  &.medium {
+    background-color: #FFC107; // Amber
+  }
+
+  &.high {
+    background-color: #F44336; // Red
+  }
+}

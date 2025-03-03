@@ -4,4 +4,5 @@ export interface Card {
   description: string;
   dueDate: string;
   listId: number;
+  priority: 'low' | 'medium' | 'high';
 }

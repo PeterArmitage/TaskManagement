@@ -1,10 +1,64 @@
+@use 'sass:color';
+
 .card-form-card {
     max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
+    margin: 2rem auto;
+    padding: 1rem;
   }
   
   mat-form-field {
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
+  }
+
+  mat-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
+ 
+  :host ::ng-deep {
+    .mat-select-panel {
+      .mat-option {
+        &.mat-selected {
+          &.low {
+            background-color: #4CAF50 !important;
+            color: white !important;
+          }
+          &.medium {
+            background-color: #FFC107 !important;
+            color: black !important;
+          }
+          &.high {
+            background-color: #F44336 !important;
+            color: white !important;
+          }
+        }
+      }
+    }
+
+    .mat-option {
+      &.low {
+        background-color: #4CAF50;
+        color: white;
+        &:hover {
+          background-color: color.adjust(#4CAF50, $lightness: -10%) !important;
+        }
+      }
+      &.medium {
+        background-color: #FFC107;
+        color: black;
+        &:hover {
+          background-color: color.adjust(#FFC107, $lightness: -10%) !important;
+        }
+      }
+      &.high {
+        background-color: #F44336;
+        color: white;
+        &:hover {
+          background-color: color.adjust(#F44336, $lightness: -10%) !important;
+        }
+      }
+    }
   }

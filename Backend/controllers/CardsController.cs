@@ -51,6 +51,7 @@ namespace Backend.Controllers
                 var list = await _context.Lists.FindAsync(card.ListId);
                 if (list == null) return NotFound($"List with ID {card.ListId} not found");
 
+                card.Priority = card.Priority ?? "medium"; // Default to medium if not provided
                 _context.Cards.Add(card);
                 await _context.SaveChangesAsync();
 
@@ -75,6 +76,13 @@ namespace Backend.Controllers
 
             try
             {
+                var existingCard = await _context.Cards.FindAsync(id);
+                if (existingCard == null)
+                {
+                    return NotFound();
+                }
+
+                existingCard.Priority = card.Priority; 
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
