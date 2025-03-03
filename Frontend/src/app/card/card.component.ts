@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CardService } from '../services/card.service';
 import { Card } from '../models/card.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,11 @@ export class CardComponent implements OnInit {
   cards: Card[] = [];
   listId: number;
 
-  constructor(private cardService: CardService, private route: ActivatedRoute) {
+  constructor(
+    private cardService: CardService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
     this.listId = +this.route.snapshot.params['id'];
   }
 
@@ -38,5 +42,11 @@ export class CardComponent implements OnInit {
         this.loadCards();
       });
     }
+  }
+
+  openCard(id: number): void {
+    console.log('Opening card with ID:', id);
+    console.log('Current list ID:', this.listId);
+    this.router.navigate(['/lists', this.listId, 'cards', 'edit', id]);
   }
 }

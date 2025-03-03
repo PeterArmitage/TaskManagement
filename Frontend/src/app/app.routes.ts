@@ -15,4 +15,5 @@ export const routes: Routes = [
   { path: 'boards/:id/lists/add', component: ListFormComponent }, // Add list page
   { path: 'lists/:id/cards', component: CardComponent }, // Card page for a specific list
   { path: 'lists/:id/cards/add', component: CardFormComponent }, // Add card page
+  { path: 'lists/:id/cards/edit/:cardId', component: CardFormComponent }, // Edit card page
 ];

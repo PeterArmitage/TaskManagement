@@ -25,14 +25,14 @@ export class CardService {
   createCard(card: {
     title: string;
     description: string;
-    dueDate: Date;
+    dueDate: string;
     listId: number;
   }): Observable<Card> {
     return this.http
       .post<Card>(this.apiUrl, {
         title: card.title,
         description: card.description,
-        dueDate: card.dueDate.toISOString(),
+        dueDate: card.dueDate,
         listId: card.listId,
       })
       .pipe(
