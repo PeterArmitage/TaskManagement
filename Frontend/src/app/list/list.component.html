@@ -1,5 +1,10 @@
 <div class="list-container">
-    <h2>Lists</h2>
+    <div class="header-container">
+        <button mat-button (click)="goBack()" class="back-button">
+            <mat-icon>arrow_back</mat-icon> Back to Boards
+        </button>
+        <h2>Lists</h2>
+    </div>
     <button mat-raised-button color="primary" [routerLink]="['/boards', boardId, 'lists', 'add']">Create List</button>
     <div class="list-list">
       <mat-card *ngFor="let list of lists" class="list-card">

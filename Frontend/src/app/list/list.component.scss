@@ -23,3 +23,21 @@
   .list-card {
     width: 300px;
   }
+
+  .header-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+
+    h2 {
+        margin: 0;
+    }
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    min-width: unset;
+}
