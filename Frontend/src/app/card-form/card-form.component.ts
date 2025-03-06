@@ -11,6 +11,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { CommentService } from '../services/comment.service';
+import { Comment } from '../models/comment';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-card-form',
@@ -25,21 +28,26 @@ import { MatSelectModule } from '@angular/material/select';
     MatNativeDateModule,
     MatOptionModule,
     MatSelectModule,
+    FormsModule,
   ],
   templateUrl: './card-form.component.html',
   styleUrls: ['./card-form.component.scss'],
+  providers: [CommentService],
 })
 export class CardFormComponent implements OnInit {
   cardForm: FormGroup;
   listId: number;
   isEditMode = false;
   cardId: number | null = null;
+  comments: Comment[] = [];
+  newComment = '';
 
   constructor(
     private fb: FormBuilder,
     private cardService: CardService,
     private route: ActivatedRoute,
-    public router: Router
+    public router: Router,
+    private commentService: CommentService
   ) {
     this.listId = +this.route.snapshot.params['id'];
     this.cardForm = this.fb.group({
@@ -58,6 +66,7 @@ export class CardFormComponent implements OnInit {
       this.isEditMode = true;
       this.cardId = +cardId;
       this.loadCardForEdit(this.cardId);
+      this.loadComments();
     }
   }
 
@@ -98,5 +107,38 @@ export class CardFormComponent implements OnInit {
         },
       });
     }
+  }
+
+  loadComments(): void {
+    if (this.cardId) {
+      this.commentService
+        .getCommentsForCard(this.cardId)
+        .subscribe((comments) => {
+          this.comments = comments;
+        });
+    }
+  }
+
+  addComment(): void {
+    if (!this.cardId) {
+      console.error('Cannot add comment - cardId is null');
+      return;
+    }
+
+    const comment = {
+      content: this.newComment,
+      cardId: this.cardId,
+    };
+
+    this.commentService.addComment(comment).subscribe({
+      next: (response) => {
+        this.comments.push(response);
+        this.newComment = '';
+      },
+      error: (err) => {
+        console.error('Error adding comment:', err);
+        alert(err.message);
+      },
+    });
   }
 }

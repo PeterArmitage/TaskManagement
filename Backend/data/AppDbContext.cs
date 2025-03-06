@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Data
 {
@@ -12,6 +13,7 @@ namespace Backend.Data
         public DbSet<List> Lists { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<TaskItem> Tasks { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
             : base(options)
@@ -26,6 +28,8 @@ namespace Backend.Data
                 .WithOne(c => c.List)
                 .HasForeignKey(c => c.ListId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Comment>().ToTable("Comment");
         }
     }
 }

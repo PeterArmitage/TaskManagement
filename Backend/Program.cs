@@ -10,13 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngularApp",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:4200") 
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
 });
 // Add DbContext
 builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
@@ -37,8 +36,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Use CORS policy
-app.UseCors("AllowAngularApp");
+// Use CORS
+app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
