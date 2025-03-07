@@ -4,8 +4,8 @@
             <mat-icon>arrow_back</mat-icon> Back to Boards
         </button>
         <h2>Lists</h2>
+        <button mat-raised-button color="primary" class="create-button" [routerLink]="['/boards', boardId, 'lists', 'add']">Create List</button>
     </div>
-    <button mat-raised-button color="primary" [routerLink]="['/boards', boardId, 'lists', 'add']">Create List</button>
     <div class="list-list">
       <mat-card *ngFor="let list of lists" class="list-card">
         <mat-card-header>
