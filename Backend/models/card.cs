@@ -10,5 +10,6 @@ namespace Backend.Models
         public List? List { get; set; }
         public required string Priority { get; set; }
         public List<Comment> Comments { get; set; } = new List<Comment>();
+        public List<ChecklistItem> ChecklistItems { get; set; } = new List<ChecklistItem>();
     }
 }

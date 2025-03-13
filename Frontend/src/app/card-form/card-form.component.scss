@@ -86,3 +86,19 @@
   width: 100%;
   margin-top: 1rem;
 }
+
+.checklist-section {
+  margin-top: 20px;
+
+  .new-checklist-item {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  mat-list-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

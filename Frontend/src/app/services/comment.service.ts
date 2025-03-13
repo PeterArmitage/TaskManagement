@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, throwError, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Comment } from '../models/comment';
 
 @Injectable({
@@ -13,7 +13,12 @@ export class CommentService {
   constructor(private http: HttpClient) {}
 
   getCommentsForCard(cardId: number): Observable<Comment[]> {
-    return this.http.get<Comment[]>(`${this.apiUrl}/card/${cardId}`);
+    return this.http
+      .get<{ data: Comment[] }>(`${this.apiUrl}/card/${cardId}`)
+      .pipe(
+        map((response) => (Array.isArray(response.data) ? response.data : [])),
+        catchError(() => of([]))
+      );
   }
 
   createComment(comment: Comment): Observable<Comment> {
@@ -27,6 +32,15 @@ export class CommentService {
     return this.http
       .post<Comment>(this.apiUrl, comment)
       .pipe(catchError(this.handleError));
+  }
+
+  getComments(cardId: number): Observable<Comment[]> {
+    return this.http
+      .get<{ data: Comment[] }>(`${this.apiUrl}/card/${cardId}`)
+      .pipe(
+        map((response) => (Array.isArray(response.data) ? response.data : [])),
+        catchError(() => of([]))
+      );
   }
 
   private handleError(error: HttpErrorResponse) {

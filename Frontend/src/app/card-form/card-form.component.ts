@@ -14,6 +14,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { CommentService } from '../services/comment.service';
 import { Comment } from '../models/comment';
 import { FormsModule } from '@angular/forms';
+import { ChecklistItem } from '../models/checklist-item.model';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-card-form',
@@ -29,6 +32,8 @@ import { FormsModule } from '@angular/forms';
     MatOptionModule,
     MatSelectModule,
     FormsModule,
+    MatListModule,
+    MatIconModule,
   ],
   templateUrl: './card-form.component.html',
   styleUrls: ['./card-form.component.scss'],
@@ -41,6 +46,8 @@ export class CardFormComponent implements OnInit {
   cardId: number | null = null;
   comments: Comment[] = [];
   newComment = '';
+  checklistItems: ChecklistItem[] = [];
+  newChecklistItem = '';
 
   constructor(
     private fb: FormBuilder,
@@ -67,6 +74,30 @@ export class CardFormComponent implements OnInit {
       this.cardId = +cardId;
       this.loadCardForEdit(this.cardId);
       this.loadComments();
+
+      // Initialize as empty arrays to prevent template errors
+      this.checklistItems = [];
+      this.comments = [];
+
+      this.cardService.getChecklistItems(cardId).subscribe({
+        next: (items) => {
+          this.checklistItems = Array.isArray(items) ? items : [];
+        },
+        error: (err) => {
+          console.error('Error fetching checklist items:', err);
+          this.checklistItems = [];
+        },
+      });
+
+      this.commentService.getComments(cardId).subscribe({
+        next: (comments) => {
+          this.comments = Array.isArray(comments) ? comments : [];
+        },
+        error: (err) => {
+          console.error('Error fetching comments:', err);
+          this.comments = [];
+        },
+      });
     }
   }
 
@@ -111,11 +142,15 @@ export class CardFormComponent implements OnInit {
 
   loadComments(): void {
     if (this.cardId) {
-      this.commentService
-        .getCommentsForCard(this.cardId)
-        .subscribe((comments) => {
-          this.comments = comments;
-        });
+      this.commentService.getCommentsForCard(this.cardId).subscribe({
+        next: (comments) => {
+          this.comments = Array.isArray(comments) ? comments : [];
+        },
+        error: (err) => {
+          console.error('Error fetching comments:', err);
+          this.comments = [];
+        },
+      });
     }
   }
 
@@ -140,5 +175,46 @@ export class CardFormComponent implements OnInit {
         alert(err.message);
       },
     });
+  }
+
+  addChecklistItem() {
+    if (this.newChecklistItem.trim()) {
+      const newItem: ChecklistItem = {
+        content: this.newChecklistItem,
+        isCompleted: false,
+        cardId: this.cardId || 0,
+      };
+
+      this.cardService.createChecklistItem(newItem).subscribe({
+        next: (item) => {
+          this.checklistItems.push(item);
+          this.newChecklistItem = '';
+        },
+        error: (err) => console.error('Error adding checklist item:', err),
+      });
+    }
+  }
+
+  toggleChecklistItem(item: ChecklistItem) {
+    item.isCompleted = !item.isCompleted;
+    this.cardService.updateChecklistItem(item).subscribe({
+      error: (err) => console.error('Error updating checklist item:', err),
+    });
+  }
+
+  deleteChecklistItem(id: number) {
+    this.cardService.deleteChecklistItem(id).subscribe({
+      next: () => {
+        this.checklistItems = this.checklistItems.filter(
+          (item) => item.id !== id
+        );
+      },
+      error: (err) => console.error('Error deleting checklist item:', err),
+    });
+  }
+
+  ngAfterViewInit(): void {
+    console.log('Checklist Items:', this.checklistItems);
+    console.log('Comments:', this.comments);
   }
 }

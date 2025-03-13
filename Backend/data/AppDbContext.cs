@@ -14,6 +14,7 @@ namespace Backend.Data
         public DbSet<Card> Cards { get; set; }
         public DbSet<TaskItem> Tasks { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<ChecklistItem> ChecklistItems { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
             : base(options)
@@ -29,7 +30,13 @@ namespace Backend.Data
                 .HasForeignKey(c => c.ListId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Comment>().ToTable("Comment");
+            modelBuilder.Entity<ChecklistItem>(entity =>
+            {
+                entity.HasOne(ci => ci.Card)
+                    .WithMany(c => c.ChecklistItems)
+                    .HasForeignKey(ci => ci.CardId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
         }
     }
 }

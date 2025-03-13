@@ -78,6 +78,31 @@ namespace TaskManagementSystem.API.Migrations
                     b.HasAnnotation("Relational:JsonPropertyName", "cards");
                 });
 
+            modelBuilder.Entity("Backend.Models.ChecklistItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CardId");
+
+                    b.ToTable("ChecklistItems");
+                });
+
             modelBuilder.Entity("Backend.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -100,7 +125,7 @@ namespace TaskManagementSystem.API.Migrations
 
                     b.HasIndex("CardId");
 
-                    b.ToTable("Comment", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Backend.Models.List", b =>
@@ -166,6 +191,17 @@ namespace TaskManagementSystem.API.Migrations
                     b.Navigation("List");
                 });
 
+            modelBuilder.Entity("Backend.Models.ChecklistItem", b =>
+                {
+                    b.HasOne("Backend.Models.Card", "Card")
+                        .WithMany("ChecklistItems")
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Card");
+                });
+
             modelBuilder.Entity("Backend.Models.Comment", b =>
                 {
                     b.HasOne("Backend.Models.Card", "Card")
@@ -195,6 +231,8 @@ namespace TaskManagementSystem.API.Migrations
 
             modelBuilder.Entity("Backend.Models.Card", b =>
                 {
+                    b.Navigation("ChecklistItems");
+
                     b.Navigation("Comments");
                 });
 

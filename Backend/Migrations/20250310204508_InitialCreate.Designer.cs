@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TaskManagementSystem.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250303203520_UpdateListCardRelationship")]
-    partial class UpdateListCardRelationship
+    [Migration("20250310204508_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,6 +81,56 @@ namespace TaskManagementSystem.API.Migrations
                     b.HasAnnotation("Relational:JsonPropertyName", "cards");
                 });
 
+            modelBuilder.Entity("Backend.Models.ChecklistItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CardId");
+
+                    b.ToTable("ChecklistItems");
+                });
+
+            modelBuilder.Entity("Backend.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CardId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("Backend.Models.List", b =>
                 {
                     b.Property<int>("Id")
@@ -144,6 +194,28 @@ namespace TaskManagementSystem.API.Migrations
                     b.Navigation("List");
                 });
 
+            modelBuilder.Entity("Backend.Models.ChecklistItem", b =>
+                {
+                    b.HasOne("Backend.Models.Card", "Card")
+                        .WithMany("ChecklistItems")
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Card");
+                });
+
+            modelBuilder.Entity("Backend.Models.Comment", b =>
+                {
+                    b.HasOne("Backend.Models.Card", "Card")
+                        .WithMany("Comments")
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Card");
+                });
+
             modelBuilder.Entity("Backend.Models.List", b =>
                 {
                     b.HasOne("Backend.Models.Board", "Board")
@@ -158,6 +230,13 @@ namespace TaskManagementSystem.API.Migrations
             modelBuilder.Entity("Backend.Models.Board", b =>
                 {
                     b.Navigation("Lists");
+                });
+
+            modelBuilder.Entity("Backend.Models.Card", b =>
+                {
+                    b.Navigation("ChecklistItems");
+
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("Backend.Models.List", b =>

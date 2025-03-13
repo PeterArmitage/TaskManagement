@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Card } from '../models/card.model';
 import { catchError, map } from 'rxjs/operators';
+import { ChecklistItem } from '../models/checklist-item.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CardService {
   private apiUrl = 'http://localhost:5041/api/cards';
+  private checklistApiUrl = 'http://localhost:5041/api/checklistitems';
 
   constructor(private http: HttpClient) {}
 
@@ -51,5 +53,29 @@ export class CardService {
 
   deleteCard(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getChecklistItems(cardId: number): Observable<ChecklistItem[]> {
+    return this.http
+      .get<{ data: ChecklistItem[] }>(`${this.checklistApiUrl}/card/${cardId}`)
+      .pipe(
+        map((response) => (Array.isArray(response.data) ? response.data : [])),
+        catchError(() => of([]))
+      );
+  }
+
+  createChecklistItem(item: ChecklistItem): Observable<ChecklistItem> {
+    return this.http.post<ChecklistItem>(this.checklistApiUrl, item);
+  }
+
+  updateChecklistItem(item: ChecklistItem): Observable<ChecklistItem> {
+    return this.http.put<ChecklistItem>(
+      `${this.checklistApiUrl}/${item.id}`,
+      item
+    );
+  }
+
+  deleteChecklistItem(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.checklistApiUrl}/${id}`);
   }
 }
