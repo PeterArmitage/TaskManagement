@@ -13,12 +13,29 @@ export class CommentService {
   constructor(private http: HttpClient) {}
 
   getCommentsForCard(cardId: number): Observable<Comment[]> {
-    return this.http
-      .get<{ data: Comment[] }>(`${this.apiUrl}/card/${cardId}`)
-      .pipe(
-        map((response) => (Array.isArray(response.data) ? response.data : [])),
-        catchError(() => of([]))
-      );
+    return this.http.get<any>(`${this.apiUrl}/card/${cardId}`).pipe(
+      map((response) => {
+        // Check if response has $values property
+        if (response && response.$values) {
+          return response.$values;
+        }
+        // If it's already an array, return it
+        if (Array.isArray(response)) {
+          return response;
+        }
+        // If it's an object with a data property
+        if (response && response.data && Array.isArray(response.data)) {
+          return response.data;
+        }
+        // Default to empty array
+        console.warn('Unexpected response format:', response);
+        return [];
+      }),
+      catchError((error) => {
+        console.error('Error fetching comments:', error);
+        return of([]);
+      })
+    );
   }
 
   createComment(comment: Comment): Observable<Comment> {
@@ -35,12 +52,29 @@ export class CommentService {
   }
 
   getComments(cardId: number): Observable<Comment[]> {
-    return this.http
-      .get<{ data: Comment[] }>(`${this.apiUrl}/card/${cardId}`)
-      .pipe(
-        map((response) => (Array.isArray(response.data) ? response.data : [])),
-        catchError(() => of([]))
-      );
+    return this.http.get<any>(`${this.apiUrl}/card/${cardId}`).pipe(
+      map((response) => {
+        // Check if response has $values property
+        if (response && response.$values) {
+          return response.$values;
+        }
+        // If it's already an array, return it
+        if (Array.isArray(response)) {
+          return response;
+        }
+        // If it's an object with a data property
+        if (response && response.data && Array.isArray(response.data)) {
+          return response.data;
+        }
+        // Default to empty array
+        console.warn('Unexpected response format:', response);
+        return [];
+      }),
+      catchError((error) => {
+        console.error('Error fetching comments:', error);
+        return of([]);
+      })
+    );
   }
 
   private handleError(error: HttpErrorResponse) {

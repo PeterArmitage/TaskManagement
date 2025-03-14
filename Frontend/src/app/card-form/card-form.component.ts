@@ -69,33 +69,31 @@ export class CardFormComponent implements OnInit {
   ngOnInit(): void {
     const cardId = this.route.snapshot.params['cardId'];
     console.log('Received card ID:', cardId);
+
+    // Initialize as empty arrays to prevent template errors
+    this.checklistItems = [];
+    this.comments = [];
+
     if (cardId) {
       this.isEditMode = true;
       this.cardId = +cardId;
       this.loadCardForEdit(this.cardId);
       this.loadComments();
 
-      // Initialize as empty arrays to prevent template errors
-      this.checklistItems = [];
-      this.comments = [];
-
+      console.log('Fetching checklist items for card ID:', cardId);
       this.cardService.getChecklistItems(cardId).subscribe({
         next: (items) => {
-          this.checklistItems = Array.isArray(items) ? items : [];
+          console.log('Raw checklist items response:', items);
+          if (Array.isArray(items)) {
+            this.checklistItems = items;
+            console.log('Processed checklist items:', this.checklistItems);
+          } else {
+            console.error('Checklist items is not an array:', items);
+            this.checklistItems = [];
+          }
         },
         error: (err) => {
           console.error('Error fetching checklist items:', err);
-          this.checklistItems = [];
-        },
-      });
-
-      this.commentService.getComments(cardId).subscribe({
-        next: (comments) => {
-          this.comments = Array.isArray(comments) ? comments : [];
-        },
-        error: (err) => {
-          console.error('Error fetching comments:', err);
-          this.comments = [];
         },
       });
     }
@@ -129,7 +127,15 @@ export class CardFormComponent implements OnInit {
           : this.cardService.createCard(cardData);
 
       operation.subscribe({
-        next: () => {
+        next: (savedCard) => {
+          console.log('Card saved successfully:', savedCard);
+
+          // If we're in create mode, we need to save the comments and checklist items
+          // after the card is created since we need the card ID
+          if (!this.isEditMode && savedCard && savedCard.id) {
+            this.saveCommentsAndChecklistItems(savedCard.id);
+          }
+
           this.router.navigate(['/lists', this.listId, 'cards']);
         },
         error: (err) => {
@@ -140,18 +146,50 @@ export class CardFormComponent implements OnInit {
     }
   }
 
-  loadComments(): void {
-    if (this.cardId) {
-      this.commentService.getCommentsForCard(this.cardId).subscribe({
-        next: (comments) => {
-          this.comments = Array.isArray(comments) ? comments : [];
-        },
-        error: (err) => {
-          console.error('Error fetching comments:', err);
-          this.comments = [];
-        },
+  saveCommentsAndChecklistItems(cardId: number): void {
+    // Save any pending comments
+    if (this.newComment.trim()) {
+      const comment = {
+        content: this.newComment,
+        cardId: cardId,
+      };
+      this.commentService.addComment(comment).subscribe({
+        next: () => console.log('Comment saved successfully'),
+        error: (err) => console.error('Error saving comment:', err),
       });
     }
+
+    // Save any pending checklist items
+    if (this.newChecklistItem.trim()) {
+      const newItem: ChecklistItem = {
+        content: this.newChecklistItem,
+        isCompleted: false,
+        cardId: cardId,
+      };
+      this.cardService.createChecklistItem(newItem).subscribe({
+        next: () => console.log('Checklist item saved successfully'),
+        error: (err) => console.error('Error saving checklist item:', err),
+      });
+    }
+  }
+
+  loadComments(): void {
+    if (!this.cardId) {
+      console.error('Cannot load comments - cardId is null');
+      return;
+    }
+
+    console.log('Loading comments for card ID:', this.cardId);
+    this.commentService.getCommentsForCard(this.cardId).subscribe({
+      next: (comments: Comment[]) => {
+        console.log('Received comments from API:', comments);
+        this.comments = comments;
+      },
+      error: (err: Error) => {
+        console.error('Error loading comments:', err);
+        this.comments = [];
+      },
+    });
   }
 
   addComment(): void {
@@ -177,12 +215,12 @@ export class CardFormComponent implements OnInit {
     });
   }
 
-  addChecklistItem() {
-    if (this.newChecklistItem.trim()) {
+  addChecklistItem(): void {
+    if (this.newChecklistItem.trim() && this.cardId) {
       const newItem: ChecklistItem = {
         content: this.newChecklistItem,
         isCompleted: false,
-        cardId: this.cardId || 0,
+        cardId: this.cardId,
       };
 
       this.cardService.createChecklistItem(newItem).subscribe({
@@ -195,14 +233,14 @@ export class CardFormComponent implements OnInit {
     }
   }
 
-  toggleChecklistItem(item: ChecklistItem) {
+  toggleChecklistItem(item: ChecklistItem): void {
     item.isCompleted = !item.isCompleted;
     this.cardService.updateChecklistItem(item).subscribe({
       error: (err) => console.error('Error updating checklist item:', err),
     });
   }
 
-  deleteChecklistItem(id: number) {
+  deleteChecklistItem(id: number): void {
     this.cardService.deleteChecklistItem(id).subscribe({
       next: () => {
         this.checklistItems = this.checklistItems.filter(
