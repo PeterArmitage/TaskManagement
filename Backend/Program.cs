@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,21 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
+
+// Add JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                builder.Configuration.GetSection("AppSettings:Token").Value ?? "defaultsecretkey12345")),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
 // Add DbContext
 builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
 {
@@ -58,7 +76,11 @@ app.Use(async (context, next) =>
 });
 
 // app.UseHttpsRedirection();
+
+// Use Authentication & Authorization
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 // Add logging middleware

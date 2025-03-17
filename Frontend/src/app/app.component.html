@@ -1,6 +1,7 @@
 <mat-sidenav-container class="sidenav-container">
-  <!-- Sidenav -->
+  <!-- Sidenav (only shown when logged in) -->
   <mat-sidenav #sidenav 
+               *ngIf="authService.isLoggedIn()"
                mode="side" 
                [style.width.px]="isExpanded ? 250 : 60"
                opened>
@@ -27,12 +28,43 @@
   </mat-sidenav>
 
   <!-- Main Content -->
-  <mat-sidenav-content [style.margin-left.px]="isExpanded ? 250 : 60">
+  <mat-sidenav-content [style.margin-left.px]="authService.isLoggedIn() && isExpanded ? 250 : (authService.isLoggedIn() ? 60 : 0)">
     <mat-toolbar color="primary">
       <span>{{ title }}</span>
+      <div class="toolbar-spacer"></div>
+      
+      <!-- Theme Toggle Button -->
+      <button mat-icon-button 
+              class="theme-toggle-btn animate-in"
+              (click)="toggleTheme()" 
+              aria-label="Toggle theme"
+              [matTooltip]="(themeService.theme$ | async) === 'light-theme' ? 'Switch to dark mode' : 'Switch to light mode'">
+        <mat-icon>{{ (themeService.theme$ | async) === 'light-theme' ? 'dark_mode' : 'light_mode' }}</mat-icon>
+      </button>
+      
+      <!-- User Profile Button -->
+      <button mat-icon-button
+              *ngIf="authService.isLoggedIn()"
+              class="user-profile-btn animate-in" 
+              [matMenuTriggerFor]="userMenu" 
+              aria-label="User menu"
+              matTooltip="User menu">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <div class="user-info-container" *ngIf="authService.getCurrentUser() as user">
+          <p class="username">{{ user.username }}</p>
+          <p class="email">{{ user.email }}</p>
+          <mat-divider></mat-divider>
+        </div>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
     </mat-toolbar>
 
-    <div class="content">
+    <div class="content animate-in">
       <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>

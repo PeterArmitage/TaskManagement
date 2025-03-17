@@ -97,3 +97,36 @@ mat-sidenav-content {
     margin-top: 56px;
   }
 }
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.theme-toggle-btn {
+  margin-left: 8px;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+  transform: rotate(30deg);
+}
+
+.user-profile-btn {
+  margin-left: 8px;
+}
+
+.user-info-container {
+  padding: 16px;
+  min-width: 180px;
+  
+  .username {
+    font-weight: 500;
+    margin: 0 0 4px 0;
+  }
+  
+  .email {
+    color: var(--secondary-text-color);
+    margin: 0 0 8px 0;
+    font-size: 12px;
+  }
+}

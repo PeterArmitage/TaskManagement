@@ -1,36 +1,57 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Board } from '../models/board.model';
 import { map } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BoardService {
-  private apiUrl = 'http://localhost:5041/api/boards';
+  private apiUrl = 'http://localhost:5255/api/boards';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
+
+  private getHttpOptions() {
+    const token = this.authService.getToken();
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }),
+    };
+  }
 
   getBoards(): Observable<Board[]> {
-    return this.http
-      .get<{ $values: Board[] }>(this.apiUrl)
-      .pipe(map((response) => response.$values));
+    return this.http.get<Board[]>(this.apiUrl, this.getHttpOptions()).pipe(
+      map((boards: any) => {
+        // Handle both array response and object with $values property
+        return Array.isArray(boards) ? boards : boards.$values || [];
+      })
+    );
   }
 
   getBoard(id: number): Observable<Board> {
-    return this.http.get<Board>(`${this.apiUrl}/${id}`);
+    return this.http.get<Board>(`${this.apiUrl}/${id}`, this.getHttpOptions());
   }
 
   createBoard(board: Board): Observable<Board> {
-    return this.http.post<Board>(this.apiUrl, board);
+    return this.http.post<Board>(this.apiUrl, board, this.getHttpOptions());
   }
 
   updateBoard(id: number, board: Board): Observable<Board> {
-    return this.http.put<Board>(`${this.apiUrl}/${id}`, board);
+    return this.http.put<Board>(
+      `${this.apiUrl}/${id}`,
+      board,
+      this.getHttpOptions()
+    );
   }
 
   deleteBoard(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(
+      `${this.apiUrl}/${id}`,
+      this.getHttpOptions()
+    );
   }
 }

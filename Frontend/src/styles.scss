@@ -1,20 +1,102 @@
+@use '@angular/material' as mat;
+@include mat.core();
+
+/* Light theme */
+body.light-theme {
+  /* Colors */
+  --background-color: #f5f5f5;
+  --card-background: #ffffff;
+  --text-color: rgba(0, 0, 0, 0.87);
+  --secondary-text-color: rgba(0, 0, 0, 0.54);
+  --divider-color: rgba(0, 0, 0, 0.12);
+  --primary-color: #2196f3;
+  --accent-color: #e91e63;
+  --warn-color: #f44336;
+}
+
+/* Dark theme */
+body.dark-theme {
+  /* Colors */
+  --background-color: #303030;
+  --card-background: #424242;
+  --text-color: #ffffff;
+  --secondary-text-color: rgba(255, 255, 255, 0.7);
+  --divider-color: rgba(255, 255, 255, 0.12);
+  --primary-color: #90caf9;
+  --accent-color: #f48fb1;
+  --warn-color: #ef9a9a;
+}
+
+/* Common variables */
+:root {
+  --transition-duration: 0.3s;
+}
+
+// Define the light theme using the m2-prefixed functions
+$light-primary: mat.m2-define-palette(mat.$m2-blue-palette, 500, 100, 900);
+$light-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
+$light-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+$light-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $light-primary,
+    accent: $light-accent,
+    warn: $light-warn,
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0,
+));
+
+@include mat.all-component-themes($light-theme);
+
+/* Dark theme overrides */
+.dark-theme {
+  $dark-primary: mat.m2-define-palette(mat.$m2-light-blue-palette, 200, 100, 600);
+  $dark-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
+  $dark-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+  $dark-theme: mat.m2-define-dark-theme((
+    color: (
+      primary: $dark-primary,
+      accent: $dark-accent,
+      warn: $dark-warn,
+    ),
+    typography: mat.m2-define-typography-config(),
+    density: 0,
+  ));
+
+  @include mat.all-component-colors($dark-theme);
+}
+
+/* Base styles */
 html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif; 
-    
-  }
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color var(--transition-duration) ease, 
+              color var(--transition-duration) ease;
+}
 
 app-root {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  
 }
 
 .mat-sidenav-container, .mat-sidenav-content {
   height: 100%;
+  background-color: var(--background-color) !important;
+  transition: background-color var(--transition-duration) ease;
+}
+
+.mat-drawer-container {
+  background-color: var(--background-color) !important;
 }
 
 mat-icon {
@@ -23,5 +105,58 @@ mat-icon {
 
 .full-text {
   margin-left: 8px !important;
+}
+
+/* Animations */
+.animate-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hover-scale {
+  transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.03);
+}
+
+/* Component specific styles */
+.mat-mdc-card {
+  background-color: var(--card-background) !important;
+  transition: background-color var(--transition-duration) ease;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* Dark theme fixes */
+.dark-theme .mat-mdc-dialog-container .mdc-dialog__surface {
+  background-color: var(--card-background) !important;
+}
+
+/* Ensure text color in dark theme */
+.dark-theme .mat-mdc-card-content {
+  color: var(--text-color) !important;
+}
+
+.dark-theme .mat-mdc-card-title {
+  color: var(--text-color) !important;
+}
+
+/* Important overrides for sidenav in dark theme */
+.dark-theme .mat-drawer {
+  background-color: var(--card-background) !important;
+}
+
+.dark-theme .mat-drawer-content {
+  background-color: var(--background-color) !important;
 }
 
