@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TaskService } from '../services/task.service';
-import { TaskItem } from '../models/task-item.model';
+import { TaskService } from '../../../services/task.service';
+import { TaskItem } from '../../../models/task-item.model';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -30,6 +30,7 @@ export class TaskDetailComponent implements OnInit {
     description: '',
     isCompleted: false,
     dueDate: new Date().toISOString().split('T')[0],
+    createdAt: new Date().toISOString(),
   };
 
   constructor(

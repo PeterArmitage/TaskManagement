@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { CardService } from '../services/card.service';
-import { Card } from '../models/card.model';
+import { CardService } from '../../../services/card.service';
+import { Card } from '../../../models/card.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { ListService } from '../services/list.service';
+import { ListService } from '../../../services/list.service';
 
 @Component({
   selector: 'app-card',

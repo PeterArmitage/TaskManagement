@@ -6,10 +6,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterModule } from '@angular/router';
-import { TaskService } from '../services/task.service';
+import { TaskService } from '../../../services/task.service';
 import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { TaskItem } from '../models/task-item.model';
+import { TaskItem } from '../../../models/task-item.model';
 
 interface TaskStats {
   total: number;

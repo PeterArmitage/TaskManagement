@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CardService } from '../services/card.service';
+import { CardService } from '../../../services/card.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
@@ -11,10 +11,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
-import { CommentService } from '../services/comment.service';
-import { Comment } from '../models/comment';
+import { CommentService } from '../../../services/comment.service';
+import { Comment } from '../../../models/comment';
 import { FormsModule } from '@angular/forms';
-import { ChecklistItem } from '../models/checklist-item.model';
+import { ChecklistItem } from '../../../models/checklist-item.model';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 

@@ -26,7 +26,7 @@ export class TestComponent {
     id: 1,
     name: 'Test List',
     boardId: 1,
-    cards: [],
+    cards: { $values: [] },
   };
 
   card: Card = {
@@ -35,5 +35,6 @@ export class TestComponent {
     description: 'This is a test card',
     dueDate: '2023-12-31',
     listId: 1,
+    priority: 'medium',
   };
 }

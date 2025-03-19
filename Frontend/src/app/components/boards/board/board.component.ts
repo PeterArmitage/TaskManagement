@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BoardService } from '../services/board.service';
-import { Board } from '../models/board.model';
+import { BoardService } from '../../../services/board.service';
+import { Board } from '../../../models/board.model';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';

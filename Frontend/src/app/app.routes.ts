@@ -1,14 +1,14 @@
 import { Routes } from '@angular/router';
 import { inject } from '@angular/core';
-import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { NotFoundComponent } from './not-found/not-found.component';
+import { HomeComponent } from './components/core/home/home.component';
+import { LoginComponent } from './components/auth/login/login.component';
+import { RegisterComponent } from './components/auth/register/register.component';
+import { NotFoundComponent } from './components/core/not-found/not-found.component';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { ProfileComponent } from './profile/profile.component';
-import { TasksComponent } from './tasks/tasks.component';
+import { DashboardComponent } from './components/core/dashboard/dashboard.component';
+import { ProfileComponent } from './components/core/profile/profile.component';
+import { TasksComponent } from './components/tasks/tasks/tasks.component';
 
 // Auth guard function
 const authGuard = () => {
@@ -42,6 +42,6 @@ export const routes: Routes = [
     component: TasksComponent,
     canActivate: [() => authGuard()],
   }, // Tasks page
-  { path: '404', component: NotFoundComponent }, // 404 page
-  { path: '**', redirectTo: '/404' }, // Redirect to 404 page for any unmatched routes
+  { path: '404', component: NotFoundComponent },
+  { path: '**', redirectTo: '/404' },
 ];

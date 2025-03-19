@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { TaskService } from '../services/task.service';
-import { TaskItem } from '../models/task-item.model';
+import { TaskService } from '../../../services/task.service';
+import { TaskItem } from '../../../models/task-item.model';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -30,6 +30,7 @@ export class TaskListComponent implements OnInit {
     title: '',
     description: '',
     dueDate: new Date().toISOString().split('T')[0],
+    createdAt: new Date().toISOString(),
     isCompleted: false,
   };
   displayedColumns: string[] = ['title', 'description', 'actions'];

@@ -12,7 +12,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { AuthService, User } from '../services/auth.service';
+import { AuthService, User } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-profile',

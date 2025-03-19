@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ListService } from '../services/list.service';
-import { List } from '../models/list.model';
+import { ListService } from '../../../services/list.service';
+import { List } from '../../../models/list.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';

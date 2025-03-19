@@ -26,7 +26,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { TaskService } from '../services/task.service';
+import { TaskService } from '../../../services/task.service';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import {
@@ -34,7 +34,7 @@ import {
   TaskComment,
   TaskChecklistItem,
   TaskLabel,
-} from '../models/task-item.model';
+} from '../../../models/task-item.model';
 
 @Component({
   selector: 'app-tasks',
