@@ -10,6 +10,7 @@ export interface User {
   username: string;
   email: string;
   token?: string;
+  profilePicture?: string;
 }
 
 export interface AuthResponse {
@@ -23,7 +24,7 @@ export interface AuthResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5255/api/auth';
+  private apiUrl = 'http://localhost:5041/api/auth';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   private tokenKey = 'auth_token';
@@ -59,6 +60,7 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<User> {
+    console.log('Attempting login to:', this.apiUrl);
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/login`, { email, password })
       .pipe(
@@ -99,6 +101,7 @@ export class AuthService {
     email: string,
     password: string
   ): Observable<User> {
+    console.log('Attempting registration to:', this.apiUrl);
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/register`, {
         username,

@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class BoardService {
-  private apiUrl = 'http://localhost:5255/api/boards';
+  private apiUrl = 'http://localhost:5041/api/boards';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -25,9 +25,9 @@ export class BoardService {
 
   getBoards(): Observable<Board[]> {
     return this.http.get<Board[]>(this.apiUrl, this.getHttpOptions()).pipe(
-      map((boards: any) => {
-        // Handle both array response and object with $values property
-        return Array.isArray(boards) ? boards : boards.$values || [];
+      map((response: any) => {
+        // Handle response structure based on your API
+        return response.$values ? response.$values : response;
       })
     );
   }

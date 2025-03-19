@@ -16,6 +16,9 @@ namespace Backend.Data
         public DbSet<TaskItem> Tasks { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<ChecklistItem> ChecklistItems { get; set; }
+        public DbSet<TaskComment> TaskComments { get; set; }
+        public DbSet<TaskChecklistItem> TaskChecklistItems { get; set; }
+        public DbSet<TaskLabel> TaskLabels { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
             : base(options)

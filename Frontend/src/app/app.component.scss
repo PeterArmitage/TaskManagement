@@ -41,12 +41,9 @@ mat-nav-list {
 
 // Sidenav container styles
 .sidenav-container {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #f5f5f5;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 // Sidenav specific styles
@@ -129,4 +126,61 @@ mat-sidenav-content {
     margin: 0 0 8px 0;
     font-size: 12px;
   }
+}
+
+.sidenav {
+  width: 250px;
+  box-shadow: 3px 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.content-container {
+  padding: 20px;
+  margin: 0 auto;
+  max-width: 1200px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.active-link {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: var(--primary-color);
+}
+
+/* Mobile styles */
+@media (max-width: 599px) {
+  .content-container {
+    padding: 12px;
+  }
+  
+  .sidenav {
+    width: 80%;
+    max-width: 280px;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 600px) and (max-width: 959px) {
+  .content-container {
+    padding: 16px;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-in {
+  animation: fadeIn 0.3s ease-in-out;
 }

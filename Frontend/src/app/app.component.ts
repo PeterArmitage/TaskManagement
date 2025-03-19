@@ -1,16 +1,18 @@
-import { Component, ViewEncapsulation } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
+import { ThemeService } from './services/theme.service';
+import { AuthService } from './services/auth.service';
+import { Router } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
+import { RouterModule } from '@angular/router';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { ThemeService } from './services/theme.service';
-import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -23,40 +25,38 @@ import { AuthService } from './services/auth.service';
     MatIconModule,
     MatListModule,
     MatTooltipModule,
-    MatMenuModule,
-    MatDividerModule,
     NgIf,
     AsyncPipe,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  encapsulation: ViewEncapsulation.None,
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Task Management System';
-  isSidenavOpen = true;
-  isExpanded = true;
+  isAuthenticated = false;
+
+  isHandset$: Observable<boolean>;
 
   constructor(
     public themeService: ThemeService,
-    public authService: AuthService
-  ) {}
-
-  toggleSidebar(): void {
-    this.isExpanded = !this.isExpanded;
+    private authService: AuthService,
+    private router: Router,
+    private breakpointObserver: BreakpointObserver
+  ) {
+    this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
+      map((result) => result.matches),
+      shareReplay()
+    );
   }
 
-  expandSidebar(): void {
-    if (!this.isExpanded) {
-      this.isExpanded = true;
-    }
-  }
-
-  toggleTheme(): void {
-    this.themeService.toggleTheme();
+  ngOnInit(): void {
+    this.authService.currentUser$.subscribe((user) => {
+      this.isAuthenticated = !!user;
+    });
   }
 
   logout(): void {
     this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

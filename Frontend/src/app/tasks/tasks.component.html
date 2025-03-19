@@ -1,0 +1,291 @@
+<div class="tasks-container">
+  <div class="tasks-header">
+    <h1 class="tasks-title">Task Management</h1>
+    <button mat-raised-button color="primary" (click)="openTaskForm()">
+      <mat-icon>add</mat-icon>
+      New Task
+    </button>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="loading-indicator">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <p>Loading tasks...</p>
+  </div>
+
+  <!-- Filter chips -->
+  <div class="filter-container">
+    <span class="filter-label">Filter by status:</span>
+    <div class="filter-chips">
+      <mat-chip-set>
+        <mat-chip 
+          [selected]="filterStatus === 'All'" 
+          (click)="filterTasks('All')">
+          All
+        </mat-chip>
+        <mat-chip 
+          [selected]="filterStatus === 'Pending'" 
+          (click)="filterTasks('Pending')">
+          Pending
+        </mat-chip>
+        <mat-chip 
+          [selected]="filterStatus === 'In Progress'" 
+          (click)="filterTasks('In Progress')">
+          In Progress
+        </mat-chip>
+        <mat-chip 
+          [selected]="filterStatus === 'Completed'" 
+          (click)="filterTasks('Completed')">
+          Completed
+        </mat-chip>
+      </mat-chip-set>
+    </div>
+  </div>
+
+  <!-- Task creation/editing form -->
+  <div *ngIf="isEditing || currentTaskId !== null" class="task-form-container">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ isEditing ? 'Edit Task' : 'Create New Task' }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="taskForm" (ngSubmit)="saveTask()">
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Title</mat-label>
+              <input matInput formControlName="title" placeholder="Task title">
+              <mat-error *ngIf="taskForm.get('title')?.hasError('required')">
+                Title is required
+              </mat-error>
+              <mat-error *ngIf="taskForm.get('title')?.hasError('minlength')">
+                Title must be at least 3 characters
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" placeholder="Task description" rows="3"></textarea>
+              <mat-error *ngIf="taskForm.get('description')?.hasError('required')">
+                Description is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row form-row-inline">
+            <mat-form-field appearance="outline">
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status">
+                <mat-option *ngFor="let status of statusOptions" [value]="status">
+                  {{ status }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="taskForm.get('status')?.hasError('required')">
+                Status is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Priority</mat-label>
+              <mat-select formControlName="priority">
+                <mat-option *ngFor="let priority of priorityOptions" [value]="priority">
+                  {{ priority }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row form-row-inline">
+            <mat-form-field appearance="outline">
+              <mat-label>Due Date</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="dueDate">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error *ngIf="taskForm.get('dueDate')?.hasError('required')">
+                Due date is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Assigned To</mat-label>
+              <input matInput formControlName="assignedTo" placeholder="User name">
+            </mat-form-field>
+          </div>
+
+          <!-- Labels Section -->
+          <div class="form-section">
+            <h3>Labels</h3>
+            <div class="labels-container">
+              <mat-chip-set>
+                <mat-chip 
+                  *ngFor="let label of availableLabels"
+                  [selected]="isLabelSelected(label)"
+                  (click)="toggleLabel(label)"
+                  [style.backgroundColor]="isLabelSelected(label) ? label.color : ''"
+                  [style.color]="isLabelSelected(label) ? 'white' : ''">
+                  {{ label.name }}
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+          </div>
+
+          <!-- Checklist Section -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3>Checklist</h3>
+              <button type="button" mat-button color="primary" (click)="addChecklistItem()">
+                <mat-icon>add</mat-icon> Add Item
+              </button>
+            </div>
+            
+            <div formArrayName="checklist" class="checklist-container">
+              <div *ngFor="let item of checklistArray.controls; let i = index" [formGroupName]="i" class="checklist-item">
+                <mat-checkbox formControlName="isCompleted"></mat-checkbox>
+                <mat-form-field appearance="outline">
+                  <input matInput formControlName="content" placeholder="Checklist item">
+                  <mat-error *ngIf="item.get('content')?.hasError('required')">
+                    Content is required
+                  </mat-error>
+                </mat-form-field>
+                <div class="item-actions">
+                  <button type="button" mat-icon-button color="primary" matTooltip="Save item" (click)="saveChecklistItem(i)">
+                    <mat-icon>check</mat-icon>
+                  </button>
+                  <button type="button" mat-icon-button color="warn" matTooltip="Delete item" (click)="removeChecklistItem(i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+              <div *ngIf="checklistArray.length === 0" class="empty-message">
+                No checklist items. Add one to get started.
+              </div>
+            </div>
+          </div>
+
+          <!-- Comments Section -->
+          <div class="form-section">
+            <div class="section-header">
+              <h3>Comments</h3>
+              <button type="button" mat-button color="primary" (click)="addComment()">
+                <mat-icon>add_comment</mat-icon> Add Comment
+              </button>
+            </div>
+            
+            <div formArrayName="comments" class="comments-container">
+              <div *ngFor="let comment of commentsArray.controls; let i = index" [formGroupName]="i" class="comment-item">
+                <mat-form-field appearance="outline">
+                  <mat-label>Comment</mat-label>
+                  <textarea matInput formControlName="content" rows="2"></textarea>
+                  <mat-error *ngIf="comment.get('content')?.hasError('required')">
+                    Comment cannot be empty
+                  </mat-error>
+                </mat-form-field>
+                <div class="comment-actions">
+                  <div class="comment-meta">
+                    <span class="comment-author">{{ comment.get('author')?.value }}</span>
+                    <span class="comment-date">{{ comment.get('createdAt')?.value | date:'short' }}</span>
+                  </div>
+                  <div class="comment-buttons">
+                    <button type="button" mat-icon-button color="primary" matTooltip="Save comment" (click)="saveComment(i)">
+                      <mat-icon>check</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button color="warn" matTooltip="Delete comment" (click)="removeComment(i)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="commentsArray.length === 0" class="empty-message">
+                No comments yet. Add one to get started.
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="taskForm.invalid">
+              {{ isEditing ? 'Update Task' : 'Create Task' }}
+            </button>
+            <button mat-stroked-button type="button" (click)="cancelEdit()">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Tasks list -->
+  <div *ngIf="!isLoading && !error" class="tasks-list">
+    <mat-card *ngIf="filteredTasks.length === 0" class="empty-state">
+      <mat-card-content>
+        <mat-icon>info</mat-icon>
+        <p>No tasks found. {{ filterStatus !== 'All' ? 'Try changing the filter or ' : '' }}Create a new task to get started.</p>
+      </mat-card-content>
+    </mat-card>
+
+    <div *ngFor="let task of filteredTasks" class="task-card">
+      <mat-card>
+        <mat-card-content>
+          <div class="task-header">
+            <h2 class="task-title">{{ task.title }}</h2>
+            <div class="task-actions">
+              <button mat-icon-button (click)="openTaskForm(task)" matTooltip="Edit task">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="deleteTask(task.id)" matTooltip="Delete task">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Show labels if available -->
+          <div *ngIf="task.labels && task.labels.length > 0" class="task-labels">
+            <mat-chip-set>
+              <mat-chip *ngFor="let label of task.labels" 
+                [style.backgroundColor]="label.color" 
+                [style.color]="'white'">
+                {{ label.name }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+          
+          <p class="task-description">{{ task.description }}</p>
+          
+          <!-- Show checklist summary if available -->
+          <div *ngIf="task.checklist && task.checklist.length > 0" class="task-checklist-summary">
+            <mat-icon>check_box</mat-icon>
+            {{ getCompletedChecklistCount(task) }} / {{ task.checklist.length }}
+          </div>
+          
+          <div class="task-meta">
+            <span class="task-status" [style.color]="getStatusColor(task.status)">
+              {{ task.status }}
+            </span>
+            <span class="task-priority" *ngIf="task.priority">
+              Priority: {{ task.priority }}
+            </span>
+            <span class="task-due-date">
+              Due: {{ formatDate(task.dueDate) }}
+            </span>
+          </div>
+          
+          <!-- Show assigned to if available -->
+          <div *ngIf="task.assignedTo" class="task-assigned">
+            <mat-icon>person</mat-icon> {{ task.assignedTo }}
+          </div>
+          
+          <!-- Show comment count if available -->
+          <div *ngIf="task.comments && task.comments.length > 0" class="task-comments-count">
+            <mat-icon>comment</mat-icon> {{ task.comments.length }} comment(s)
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

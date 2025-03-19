@@ -1,0 +1,116 @@
+<div class="dashboard-container">
+  <h1 class="dashboard-title">Dashboard</h1>
+
+  <!-- Error message -->
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="loading-indicator">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <!-- Stats Overview Cards -->
+  <div *ngIf="!isLoading && !error" class="stats-cards">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-icon total">
+          <mat-icon>checklist</mat-icon>
+        </div>
+        <div class="stat-details">
+          <span class="stat-value">{{ taskStats.total }}</span>
+          <span class="stat-label">Total Tasks</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-icon completed">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="stat-details">
+          <span class="stat-value">{{ taskStats.completed }}</span>
+          <span class="stat-label">Completed</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-icon in-progress">
+          <mat-icon>pending_actions</mat-icon>
+        </div>
+        <div class="stat-details">
+          <span class="stat-value">{{ taskStats.inProgress }}</span>
+          <span class="stat-label">In Progress</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-icon pending">
+          <mat-icon>schedule</mat-icon>
+        </div>
+        <div class="stat-details">
+          <span class="stat-value">{{ taskStats.pending }}</span>
+          <span class="stat-label">Pending</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Completion Rate -->
+  <div *ngIf="!isLoading && !error" class="completion-section">
+    <mat-card class="completion-card">
+      <mat-card-header>
+        <mat-card-title>Task Completion Rate</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="completion-rate">
+          <mat-progress-bar
+            [value]="taskStats.completionRate"
+            [color]="taskStats.completionRate > 50 ? 'primary' : 'accent'"
+          ></mat-progress-bar>
+          <div class="completion-text">
+            <span>{{ taskStats.completionRate.toFixed(0) }}% Complete</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Recent Tasks -->
+  <div *ngIf="!isLoading && !error" class="recent-tasks-section">
+    <mat-card class="recent-tasks-card">
+      <mat-card-header>
+        <mat-card-title>Recent Tasks</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="recentTasks.length === 0" class="no-tasks">
+          <p>No recent tasks found.</p>
+        </div>
+        <div *ngIf="recentTasks.length > 0" class="task-list">
+          <div *ngFor="let task of recentTasks" class="task-item">
+            <div class="task-details">
+              <h3 class="task-title">{{ task.title }}</h3>
+              <p class="task-description">{{ task.description }}</p>
+              <div class="task-meta">
+                <span class="task-status" [style.color]="getStatusColor(task.status)">
+                  {{ task.status }}
+                </span>
+                <span class="task-date">Created: {{ task.createdAt | date }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <a mat-button color="primary" routerLink="/tasks">View All Tasks</a>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

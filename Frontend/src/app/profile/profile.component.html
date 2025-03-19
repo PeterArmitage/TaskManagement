@@ -1,0 +1,121 @@
+<div class="profile-container">
+  <h1 class="profile-title">User Profile</h1>
+
+  <mat-card class="profile-card">
+    <mat-card-content>
+      <div *ngIf="user; else notLoggedIn">
+        <!-- View Mode -->
+        <div *ngIf="!isEditMode" class="profile-info">
+          <div class="profile-avatar">
+            <img 
+              [src]="getProfileImageUrl()" 
+              alt="Profile Picture" 
+              class="avatar-image"
+              onError="this.src='assets/default-avatar.svg'"
+            >
+          </div>
+          
+          <div class="profile-details">
+            <h2>{{ user.username }}</h2>
+            <p class="email">{{ user.email }}</p>
+            
+            <div class="action-buttons">
+              <button mat-raised-button color="primary" (click)="toggleEditMode()">
+                <mat-icon>edit</mat-icon>
+                Edit Profile
+              </button>
+              <button mat-stroked-button color="warn" (click)="logout()">
+                <mat-icon>exit_to_app</mat-icon>
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Mode -->
+        <div *ngIf="isEditMode" class="profile-edit">
+          <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+            <!-- Profile Picture Upload -->
+            <div class="profile-picture-upload">
+              <img 
+                [src]="previewUrl || (user.profilePicture || 'assets/default-avatar.svg')" 
+                alt="Profile Picture Preview" 
+                class="avatar-preview"
+                onError="this.src='assets/default-avatar.svg'"
+              >
+              <div class="upload-controls">
+                <label for="profile-picture-upload" class="upload-button">
+                  <mat-icon>add_photo_alternate</mat-icon>
+                  Change Picture
+                </label>
+                <input 
+                  type="file" 
+                  id="profile-picture-upload" 
+                  accept="image/*" 
+                  (change)="onFileSelected($event)" 
+                  style="display: none;"
+                >
+              </div>
+            </div>
+
+            <div class="form-field">
+              <mat-form-field appearance="outline">
+                <mat-label>Username</mat-label>
+                <input matInput formControlName="username" placeholder="Username">
+                <mat-error *ngIf="profileForm.get('username')?.hasError('required')">
+                  Username is required
+                </mat-error>
+                <mat-error *ngIf="profileForm.get('username')?.hasError('minlength')">
+                  Username must be at least 3 characters
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-field">
+              <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" placeholder="Email" type="email">
+                <mat-error *ngIf="profileForm.get('email')?.hasError('required')">
+                  Email is required
+                </mat-error>
+                <mat-error *ngIf="profileForm.get('email')?.hasError('email')">
+                  Please enter a valid email address
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="action-buttons">
+              <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid">
+                <mat-icon>save</mat-icon>
+                Save Changes
+              </button>
+              <button mat-stroked-button type="button" (click)="toggleEditMode()">
+                <mat-icon>cancel</mat-icon>
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Success Message -->
+        <div *ngIf="updateSuccess" class="update-success">
+          Profile updated successfully!
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="updateError" class="update-error">
+          {{ updateError }}
+        </div>
+      </div>
+
+      <!-- Not Logged In Template -->
+      <ng-template #notLoggedIn>
+        <div class="not-logged-in">
+          <mat-icon class="not-logged-icon">error</mat-icon>
+          <p>You are not logged in. Please log in to view your profile.</p>
+          <button mat-raised-button color="primary" routerLink="/login">Go to Login</button>
+        </div>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,70 +1,53 @@
 <mat-sidenav-container class="sidenav-container">
-  <!-- Sidenav (only shown when logged in) -->
-  <mat-sidenav #sidenav 
-               *ngIf="authService.isLoggedIn()"
-               mode="side" 
-               [style.width.px]="isExpanded ? 250 : 60"
-               opened>
-    <mat-toolbar color="primary" class="sidenav-toolbar">
-      <button mat-icon-button (click)="toggleSidebar()">
-        <mat-icon>{{ isExpanded ? 'chevron_left' : 'chevron_right' }}</mat-icon>
-      </button>
-      <span class="full-text" *ngIf="isExpanded">Menu</span>
-    </mat-toolbar>
+  <!-- Side Navigation -->
+  <mat-sidenav #sidenav mode="side" [opened]="(isHandset$ | async) === false" [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [fixedInViewport]="true" class="sidenav">
+    <mat-toolbar>Task Management</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item routerLink="/" (click)="expandSidebar()">
-        <mat-icon>home</mat-icon>
-        <span class="full-text" *ngIf="isExpanded">Home</span>
+      <a mat-list-item routerLink="/tasks" routerLinkActive="active-link">
+        <mat-icon aria-hidden="false" aria-label="Tasks">task</mat-icon>
+        <span class="full-text">Tasks</span>
       </a>
-      <a mat-list-item routerLink="/boards" (click)="expandSidebar()">
-        <mat-icon>dashboard</mat-icon>
-        <span class="full-text" *ngIf="isExpanded">Boards</span>
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
+        <mat-icon aria-hidden="false" aria-label="Dashboard">dashboard</mat-icon>
+        <span class="full-text">Dashboard</span>
       </a>
-      <a mat-list-item routerLink="/boards/add" (click)="expandSidebar()">
-        <mat-icon>add</mat-icon>
-        <span class="full-text" *ngIf="isExpanded">Add Board</span>
+      <a mat-list-item routerLink="/profile" routerLinkActive="active-link">
+        <mat-icon aria-hidden="false" aria-label="Profile">person</mat-icon>
+        <span class="full-text">Profile</span>
+      </a>
+      <a mat-list-item (click)="logout()" *ngIf="isAuthenticated">
+        <mat-icon aria-hidden="false" aria-label="Logout">exit_to_app</mat-icon>
+        <span class="full-text">Logout</span>
       </a>
     </mat-nav-list>
   </mat-sidenav>
-
+  
   <!-- Main Content -->
-  <mat-sidenav-content [style.margin-left.px]="authService.isLoggedIn() && isExpanded ? 250 : (authService.isLoggedIn() ? 60 : 0)">
+  <mat-sidenav-content>
     <mat-toolbar color="primary">
-      <span>{{ title }}</span>
-      <div class="toolbar-spacer"></div>
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="sidenav.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>Task Management System</span>
+      <span class="toolbar-spacer"></span>
       
-      <!-- Theme Toggle Button -->
+      <!-- Theme Toggle -->
       <button mat-icon-button 
-              class="theme-toggle-btn animate-in"
-              (click)="toggleTheme()" 
-              aria-label="Toggle theme"
-              [matTooltip]="(themeService.theme$ | async) === 'light-theme' ? 'Switch to dark mode' : 'Switch to light mode'">
+        (click)="themeService.toggleTheme()" 
+        [matTooltip]="(themeService.theme$ | async) === 'light-theme' ? 'Switch to dark mode' : 'Switch to light mode'"
+        aria-label="Toggle dark mode">
         <mat-icon>{{ (themeService.theme$ | async) === 'light-theme' ? 'dark_mode' : 'light_mode' }}</mat-icon>
       </button>
-      
-      <!-- User Profile Button -->
-      <button mat-icon-button
-              *ngIf="authService.isLoggedIn()"
-              class="user-profile-btn animate-in" 
-              [matMenuTriggerFor]="userMenu" 
-              aria-label="User menu"
-              matTooltip="User menu">
-        <mat-icon>account_circle</mat-icon>
-      </button>
-      <mat-menu #userMenu="matMenu">
-        <div class="user-info-container" *ngIf="authService.getCurrentUser() as user">
-          <p class="username">{{ user.username }}</p>
-          <p class="email">{{ user.email }}</p>
-          <mat-divider></mat-divider>
-        </div>
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>exit_to_app</mat-icon>
-          <span>Logout</span>
-        </button>
-      </mat-menu>
     </mat-toolbar>
-
-    <div class="content animate-in">
+    
+    <!-- Page Content -->
+    <div class="content-container">
       <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>
