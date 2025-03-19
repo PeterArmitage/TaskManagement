@@ -48,7 +48,7 @@
   </div>
 
   <!-- Task creation/editing form -->
-  <div *ngIf="isEditing || currentTaskId !== null" class="task-form-container">
+  <div *ngIf="isEditing || isCreating || currentTaskId !== null" class="task-form-container">
     <mat-card>
       <mat-card-header>
         <mat-card-title>{{ isEditing ? 'Edit Task' : 'Create New Task' }}</mat-card-title>

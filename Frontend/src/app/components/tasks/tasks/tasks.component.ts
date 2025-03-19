@@ -80,6 +80,7 @@ export class TasksComponent implements OnInit {
   error = '';
   taskForm: FormGroup;
   isEditing = false;
+  isCreating = false;
   currentTaskId: number | null = null;
   statusOptions = ['Pending', 'In Progress', 'Completed'];
   filterStatus = 'All';
@@ -102,6 +103,7 @@ export class TasksComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.taskForm = this.createTaskForm();
     this.loadTasks();
   }
 
@@ -227,6 +229,7 @@ export class TasksComponent implements OnInit {
   }
 
   openTaskForm(task?: TaskItem): void {
+    console.log('openTaskForm called');
     this.taskForm.reset();
     this.taskForm.patchValue({
       status: 'Pending',
@@ -246,6 +249,7 @@ export class TasksComponent implements OnInit {
 
     if (task) {
       this.isEditing = true;
+      this.isCreating = false;
       this.currentTaskId = task.id;
       this.taskForm.patchValue({
         title: task.title,
@@ -283,135 +287,57 @@ export class TasksComponent implements OnInit {
       }
     } else {
       this.isEditing = false;
+      this.isCreating = true;
       this.currentTaskId = null;
     }
   }
 
   cancelEdit(): void {
-    this.taskForm.reset();
-    this.isEditing = false;
-    this.currentTaskId = null;
+    this.resetFormState();
   }
 
   saveTask(): void {
-    if (this.taskForm.valid) {
-      // Format the date properly for the backend
-      const formattedDate = new Date(this.taskForm.value.dueDate)
-        .toISOString()
-        .split('T')[0];
-
-      const taskData: TaskItem = {
-        id: this.currentTaskId || 0,
-        title: this.taskForm.value.title,
-        description: this.taskForm.value.description,
-        status: this.taskForm.value.status,
-        isCompleted: this.taskForm.value.status === 'Completed',
-        dueDate: formattedDate,
-        createdAt: new Date().toISOString(),
-        priority: this.taskForm.value.priority,
-        assignedTo: this.taskForm.value.assignedTo,
-        comments: this.taskForm.value.comments,
-        checklist: this.taskForm.value.checklist,
-        labels: this.taskForm.value.labels,
-      };
-
-      console.log(
-        'Attempting to save task with data:',
-        JSON.stringify(taskData)
-      );
-
-      if (this.isEditing && this.currentTaskId) {
-        this.taskService
-          .updateTask(taskData)
-          .pipe(
-            tap((updatedTask) => {
-              // If response is empty, use the task data we sent
-              const resultTask = updatedTask || taskData;
-
-              const index = this.tasks.findIndex(
-                (t) => t.id === this.currentTaskId
-              );
-
-              if (index !== -1) {
-                this.tasks[index] = resultTask;
-                this.filterTasks(this.filterStatus);
-              }
-
-              this.snackBar.open('Task updated successfully', 'Close', {
-                duration: 3000,
-              });
-
-              this.cancelEdit();
-            }),
-            catchError((error) => {
-              console.error('Error updating task:', error);
-              this.snackBar.open('Failed to update task', 'Close', {
-                duration: 3000,
-              });
-              return of(null);
-            })
-          )
-          .subscribe();
-      } else {
-        console.log('Creating new task via TaskService...');
-        this.taskService
-          .createTask(taskData)
-          .pipe(
-            tap((newTask) => {
-              console.log(
-                'Task created successfully with response:',
-                JSON.stringify(newTask)
-              );
-              if (newTask) {
-                this.tasks.push(newTask);
-                this.filterTasks(this.filterStatus);
-                this.snackBar.open('Task created successfully', 'Close', {
-                  duration: 3000,
-                });
-                this.cancelEdit();
-                // Refresh task list to ensure we have the latest data
-                this.loadTasks();
-              }
-            }),
-            catchError((error) => {
-              console.error('Error creating task:', error);
-              console.error(
-                'Error details:',
-                error.message,
-                error.status,
-                error.error
-              );
-              this.snackBar.open(
-                `Failed to create task: ${error.message || 'Unknown error'}`,
-                'Close',
-                {
-                  duration: 5000,
-                }
-              );
-              return of(null);
-            })
-          )
-          .subscribe((response) => {
-            console.log('Response from create task:', response);
-          });
-      }
-    } else {
-      // Mark form controls as touched to display validation errors
-      Object.keys(this.taskForm.controls).forEach((key) => {
-        const control = this.taskForm.get(key);
-        if (control) {
-          control.markAsTouched();
-        }
-      });
-
-      this.snackBar.open(
-        'Please fix the form errors before submitting',
-        'Close',
-        {
-          duration: 3000,
-        }
-      );
+    if (this.taskForm.invalid) {
+      return;
     }
+
+    const taskData = this.taskForm.value;
+    const task: TaskItem = {
+      id: this.currentTaskId || 0,
+      title: taskData.title,
+      description: taskData.description,
+      isCompleted: taskData.status === 'Completed',
+      dueDate: taskData.dueDate,
+      createdAt: new Date().toISOString(),
+      status: taskData.status,
+      priority: taskData.priority,
+      assignedTo: taskData.assignedTo,
+      comments: taskData.comments,
+      checklist: taskData.checklist,
+      labels: taskData.labels,
+    };
+
+    const saveOperation = this.isEditing
+      ? this.taskService.updateTask(task)
+      : this.taskService.createTask(task);
+
+    saveOperation.subscribe({
+      next: () => {
+        this.loadTasks();
+        this.resetFormState();
+      },
+      error: (err) => {
+        console.error('Error saving task:', err);
+        alert('Failed to save task. Please try again.');
+      },
+    });
+  }
+
+  resetFormState(): void {
+    this.isEditing = false;
+    this.isCreating = false;
+    this.currentTaskId = null;
+    this.taskForm.reset();
   }
 
   deleteTask(id: number): void {
