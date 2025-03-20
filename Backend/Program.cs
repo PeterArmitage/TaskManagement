@@ -7,8 +7,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Load .env file
+Env.Load();
+
+// Get connection string from environment variable
+var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 
 // Add CORS policy
 builder.Services.AddCors(options =>
@@ -36,11 +43,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // Add DbContext
-builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
-{
-    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-});
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(dbConnectionString));
 
 // Add services to the container.
 builder.Services.AddControllers()

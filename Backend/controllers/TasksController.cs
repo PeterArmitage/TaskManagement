@@ -24,85 +24,10 @@ namespace Backend.Controllers
                 WriteIndented = true
             };
             
-            // Initialize tables if needed
-            EnsureTablesExist();
+          
         }
 
-        private void EnsureTablesExist()
-        {
-            if (_tablesInitialized) return;
-            
-            try
-            {
-                // Try to query the tables to see if they exist
-                _context.Set<TaskChecklistItem>().Any();
-                _context.Set<TaskComment>().Any();
-                _context.Set<TaskLabel>().Any();
-                _tablesInitialized = true;
-            }
-            catch (Exception ex)
-            {
-                // If tables don't exist, try to create them
-                try
-                {
-                    if (ex.Message.Contains("TaskChecklistItems") || ex.Message.Contains("Invalid object name"))
-                    {
-                        // Create TaskChecklistItems table
-                        _context.Database.ExecuteSqlRaw(@"
-                        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'TaskChecklistItems')
-                        BEGIN
-                            CREATE TABLE TaskChecklistItems (
-                                Id INT IDENTITY(1,1) PRIMARY KEY,
-                                TaskId INT NOT NULL,
-                                Content NVARCHAR(MAX) NOT NULL,
-                                IsCompleted BIT NOT NULL DEFAULT 0,
-                                CONSTRAINT FK_TaskChecklistItems_Tasks FOREIGN KEY (TaskId) REFERENCES Tasks(Id) ON DELETE CASCADE
-                            );
-                        END");
-                    }
-                    
-                    if (ex.Message.Contains("TaskComments") || ex.Message.Contains("Invalid object name"))
-                    {
-                        // Create TaskComments table
-                        _context.Database.ExecuteSqlRaw(@"
-                        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'TaskComments')
-                        BEGIN
-                            CREATE TABLE TaskComments (
-                                Id INT IDENTITY(1,1) PRIMARY KEY,
-                                TaskId INT NOT NULL,
-                                Content NVARCHAR(MAX) NOT NULL,
-                                CreatedAt NVARCHAR(100) NOT NULL,
-                                Author NVARCHAR(100) NULL,
-                                CONSTRAINT FK_TaskComments_Tasks FOREIGN KEY (TaskId) REFERENCES Tasks(Id) ON DELETE CASCADE
-                            );
-                        END");
-                    }
-                    
-                    if (ex.Message.Contains("TaskLabels") || ex.Message.Contains("Invalid object name"))
-                    {
-                        // Create TaskLabels table
-                        _context.Database.ExecuteSqlRaw(@"
-                        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'TaskLabels')
-                        BEGIN
-                            CREATE TABLE TaskLabels (
-                                Id INT IDENTITY(1,1) PRIMARY KEY,
-                                TaskId INT NOT NULL,
-                                Name NVARCHAR(50) NOT NULL,
-                                Color NVARCHAR(50) NOT NULL,
-                                CONSTRAINT FK_TaskLabels_Tasks FOREIGN KEY (TaskId) REFERENCES Tasks(Id) ON DELETE CASCADE
-                            );
-                        END");
-                    }
-                    
-                    _tablesInitialized = true;
-                }
-                catch (Exception createEx)
-                {
-                    // Log the error but don't crash the application
-                    Console.WriteLine($"Error creating tables: {createEx.Message}");
-                }
-            }
-        }
+      
 
         
         [HttpGet]
@@ -110,7 +35,7 @@ namespace Backend.Controllers
         {
             try
             {
-                EnsureTablesExist();
+               
                 
                 var tasks = await _context.Tasks.ToListAsync();
                 
@@ -158,7 +83,7 @@ namespace Backend.Controllers
         {
             try
             {
-                EnsureTablesExist();
+                
                 
                 var task = await GetTaskWithRelationships(id);
                 if (task == null)
@@ -179,7 +104,7 @@ namespace Backend.Controllers
         {
             try
             {
-                EnsureTablesExist();
+                
                 
                 if (task == null)
                 {
@@ -246,7 +171,7 @@ namespace Backend.Controllers
         {
             try
             {
-                EnsureTablesExist();
+                
                 
                 if (id != task.Id)
                 {
@@ -318,7 +243,7 @@ namespace Backend.Controllers
         {
             try
             {
-                EnsureTablesExist();
+                
                 
                 var task = await _context.Tasks.FindAsync(id);
                 if (task == null)
@@ -340,7 +265,7 @@ namespace Backend.Controllers
         // Helper methods for managing relationships
         private async Task<TaskItem?> GetTaskWithRelationships(int taskId)
         {
-            EnsureTablesExist();
+         
             
             var task = await _context.Tasks.FindAsync(taskId);
             if (task == null)
@@ -379,7 +304,7 @@ namespace Backend.Controllers
 
         private async Task SaveTaskComments(int taskId, List<TaskComment> comments)
         {
-            EnsureTablesExist();
+      
             
             try
             {
@@ -429,8 +354,7 @@ namespace Backend.Controllers
 
         private async Task SaveTaskChecklistItems(int taskId, List<TaskChecklistItem> checklistItems)
         {
-            EnsureTablesExist();
-            
+         
             try
             {
                 // Get existing checklist items
@@ -479,7 +403,7 @@ namespace Backend.Controllers
 
         private async Task SaveTaskLabels(int taskId, List<TaskLabel> labels)
         {
-            EnsureTablesExist();
+           
             
             try
             {
