@@ -13,6 +13,7 @@ using DotNetEnv;
 DotNetEnv.Env.Load();
 var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 var jwtKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
+var allowedOrigins = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS")?.Split(',') ?? Array.Empty<string>();
 
 if (string.IsNullOrEmpty(dbConnectionString) || string.IsNullOrEmpty(jwtKey))
 {
@@ -24,11 +25,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("AllowSpecificOrigins", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -61,12 +63,10 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.WebHost.UseUrls("http://0.0.0.0:10000");
-
 var app = builder.Build();
 
 // Use CORS
-app.UseCors("AllowAll");
+app.UseCors("AllowSpecificOrigins");
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
