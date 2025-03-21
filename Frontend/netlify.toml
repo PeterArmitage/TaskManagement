@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = "dist/task-management-system.ui"
+  publish = "dist/TaskManagementSystem.UI"
 
 [build.environment]
   BACKEND_URL = "https://taskmanagement-dkgy.onrender.com/api"
