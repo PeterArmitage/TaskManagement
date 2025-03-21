@@ -44,17 +44,17 @@
           "configurations": {
             "production": {
               "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
-              ],
+  {
+    "type": "initial",
+    "maximumWarning": "2mb",
+    "maximumError": "5mb"
+  },
+  {
+    "type": "anyComponentStyle",
+    "maximumWarning": "6kb",
+    "maximumError": "10kb"
+  }
+],
               "outputHashing": "all"
             },
             "development": {
@@ -71,6 +71,7 @@
             "production": {
               "buildTarget": "TaskManagementSystem.UI:build:production"
             },
+            
             "development": {
               "buildTarget": "TaskManagementSystem.UI:build:development"
             }

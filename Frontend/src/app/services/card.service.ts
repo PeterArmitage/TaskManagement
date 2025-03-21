@@ -4,13 +4,14 @@ import { Observable, of } from 'rxjs';
 import { Card } from '../models/card.model';
 import { catchError, map } from 'rxjs/operators';
 import { ChecklistItem } from '../models/checklist-item.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CardService {
-  private apiUrl = 'http://localhost:5041/api/cards';
-  private checklistApiUrl = 'http://localhost:5041/api/checklistitems';
+  private apiUrl = `${environment.apiUrl}/auth`;
+  private checklistApiUrl = `${environment.apiUrl}/checklistitems`;
 
   constructor(private http: HttpClient) {}
 

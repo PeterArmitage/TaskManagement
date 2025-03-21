@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { List } from '../models/list.model';
 import { catchError, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ListService {
-  private apiUrl = 'http://localhost:5041/api/lists';
+  private apiUrl = `${environment.apiUrl}/lists`;
 
   constructor(private http: HttpClient) {}
 

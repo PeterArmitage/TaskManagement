@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { Board } from '../models/board.model';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BoardService {
-  private apiUrl = 'http://localhost:5041/api/boards';
+  private apiUrl = `${environment.apiUrl}/boards`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
