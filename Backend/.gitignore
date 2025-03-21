@@ -1,0 +1,67 @@
+# Ignore build and publish directories
+bin/
+obj/
+out/
+publish/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userprefs
+
+# Ignore IDE specific files
+.vs/
+.idea/
+.vscode/
+
+# Ignore local environment files
+.env
+.env.local
+appsettings.Development.json
+
+# Ignore NuGet packages
+.nuget/
+packages/
+
+# Ignore test results
+TestResults/
+*.trx
+
+# Ignore Rider specific files
+*.sln.iml
+
+# Ignore ReSharper files
+_ReSharper.*
+*.ReSharper
+
+# Ignore Docker compose files (if using)
+docker-compose.override.yml
+
+# Ignore local development certificates
+*.pfx
+*.pem
+
+# Ignore SQLite files
+*.db
+*.sqlite
+
+# Ignore logs and diagnostics
+logs/
+*.log
+*.nlog
+
+# Ignore Rider cache
+.idea/
+*.DotSettings
+
+# Ignore Visual Studio cache files
+.vs/
+*.VC.db
+*.VC.VC.opendb
+
+# Ignore Rider temp files
+.idea/
+*.DotSettings.user
+
+# Ignore Visual Studio Code workspace settings
+.vscode/

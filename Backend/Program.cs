@@ -32,16 +32,25 @@ builder.Services.AddCors(options =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+        if (string.IsNullOrEmpty(jwtKey))
+        {
+            throw new InvalidOperationException("JWT_KEY is not set in environment variables.");
+        }
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                builder.Configuration.GetSection("AppSettings:Token").Value ?? "defaultsecretkey12345")),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
             ValidateIssuer = false,
             ValidateAudience = false
         };
     });
 
+if (builder.Environment.IsDevelopment())
+{
+    DotNetEnv.Env.Load();
+}
 // Add DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(dbConnectionString));
@@ -82,7 +91,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 // Use Authentication & Authorization
 app.UseAuthentication();
