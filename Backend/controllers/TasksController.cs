@@ -13,7 +13,6 @@ namespace Backend.Controllers
     {
         private readonly AppDbContext _context;
         private readonly JsonSerializerOptions _jsonOptions;
-        private bool _tablesInitialized = false;
 
         public TasksController(AppDbContext context)
         {
@@ -23,20 +22,13 @@ namespace Backend.Controllers
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true
             };
-            
-          
         }
 
-      
-
-        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasks()
         {
             try
             {
-               
-                
                 var tasks = await _context.Tasks.ToListAsync();
                 
                 // Load relationships for each task
@@ -77,14 +69,11 @@ namespace Backend.Controllers
             }
         }
 
-        
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskItem>> GetTask(int id)
         {
             try
             {
-                
-                
                 var task = await GetTaskWithRelationships(id);
                 if (task == null)
                 {
@@ -98,14 +87,11 @@ namespace Backend.Controllers
             }
         }
 
-        
         [HttpPost]
         public async Task<ActionResult<TaskItem>> CreateTask(TaskItem task)
         {
             try
             {
-                
-                
                 if (task == null)
                 {
                     return BadRequest("Task is null.");
@@ -165,14 +151,11 @@ namespace Backend.Controllers
             }
         }
 
-        
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(int id, TaskItem task)
         {
             try
             {
-                
-                
                 if (id != task.Id)
                 {
                     return BadRequest();
@@ -237,14 +220,11 @@ namespace Backend.Controllers
             }
         }
 
-       
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {
             try
             {
-                
-                
                 var task = await _context.Tasks.FindAsync(id);
                 if (task == null)
                 {
@@ -265,8 +245,6 @@ namespace Backend.Controllers
         // Helper methods for managing relationships
         private async Task<TaskItem?> GetTaskWithRelationships(int taskId)
         {
-         
-            
             var task = await _context.Tasks.FindAsync(taskId);
             if (task == null)
             {
@@ -304,8 +282,6 @@ namespace Backend.Controllers
 
         private async Task SaveTaskComments(int taskId, List<TaskComment> comments)
         {
-      
-            
             try
             {
                 // Get existing comments
@@ -354,7 +330,6 @@ namespace Backend.Controllers
 
         private async Task SaveTaskChecklistItems(int taskId, List<TaskChecklistItem> checklistItems)
         {
-         
             try
             {
                 // Get existing checklist items
@@ -403,8 +378,6 @@ namespace Backend.Controllers
 
         private async Task SaveTaskLabels(int taskId, List<TaskLabel> labels)
         {
-           
-            
             try
             {
                 // Get existing labels

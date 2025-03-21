@@ -17,4 +17,4 @@ COPY --from=build-env /app/out .
 
 
 
-ENTRYPOINT ["dotnet", "Backend.dll"]
+ENTRYPOINT ["dotnet", "TaskManagementSystem.API.dll"]
