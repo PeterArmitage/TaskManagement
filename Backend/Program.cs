@@ -12,7 +12,7 @@ using DotNetEnv;
 // Load environment variables
 DotNetEnv.Env.Load();
 var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+var jwtKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
 
 if (string.IsNullOrEmpty(dbConnectionString) || string.IsNullOrEmpty(jwtKey))
 {
