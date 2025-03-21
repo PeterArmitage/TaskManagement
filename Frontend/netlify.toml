@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "ng build --configuration production"
   publish = "dist/task-management-system.ui"
 
 [build.environment]
@@ -9,3 +9,8 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/404"
+  to = "/index.html"
+  status = 404
