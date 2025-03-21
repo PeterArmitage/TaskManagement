@@ -9,13 +9,17 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DotNetEnv;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Load .env file
-Env.Load();
-
-// Get connection string from environment variable
+// Load environment variables
+DotNetEnv.Env.Load();
 var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+
+if (string.IsNullOrEmpty(dbConnectionString) || string.IsNullOrEmpty(jwtKey))
+{
+    throw new InvalidOperationException("DB_CONNECTION_STRING or JWT_KEY is not set in environment variables.");
+}
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add CORS policy
 builder.Services.AddCors(options =>
@@ -32,12 +36,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
-        if (string.IsNullOrEmpty(jwtKey))
-        {
-            throw new InvalidOperationException("JWT_KEY is not set in environment variables.");
-        }
-
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
@@ -47,10 +45,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-if (builder.Environment.IsDevelopment())
-{
-    DotNetEnv.Env.Load();
-}
 // Add DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(dbConnectionString));
@@ -59,7 +53,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        // Handle circular references
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
@@ -68,30 +61,19 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.WebHost.UseUrls("http://0.0.0.0:10000");
+
 var app = builder.Build();
 
 // Use CORS
 app.UseCors("AllowAll");
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-// Add root URL redirection to Swagger
-app.Use(async (context, next) =>
-{
-    if (context.Request.Path == "/")
-    {
-        context.Response.Redirect("/swagger");
-        return;
-    }
-    await next();
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Task Management API V1");
+    c.RoutePrefix = string.Empty;
 });
-
-app.UseHttpsRedirection();
 
 // Use Authentication & Authorization
 app.UseAuthentication();
