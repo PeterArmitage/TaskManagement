@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DotNetEnv;
-using TaskManagementSystem.API.Middleware;
+
 
 
 // Load environment variables
@@ -31,8 +31,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(allowedOrigins)
               .AllowAnyMethod()
-              .AllowAnyHeader()
-              .SetIsOriginAllowed(origin => true);
+              .AllowAnyHeader();
     });
 });
 
@@ -66,9 +65,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-app.UseMiddleware<CorsMiddleware>();
+
 // CORS must come before other middleware
-app.UseCors("AllowSpecificOrigins");
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -77,6 +75,7 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty;
 });
 
+app.UseCors("AllowSpecificOrigins");
 // Use Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();
