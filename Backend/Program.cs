@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 var jwtKey = builder.Configuration.GetSection("AppSettings:Token").Value; 
-var allowedOrigins = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS")?.Split(',') ?? Array.Empty<string>();
+var allowedOrigins = new[] { "https://taskmanagementsystem25.netlify.app" };
 
 if (string.IsNullOrEmpty(dbConnectionString) || string.IsNullOrEmpty(jwtKey))
 {

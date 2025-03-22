@@ -1,5 +1,5 @@
 import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -104,11 +104,18 @@ export class AuthService {
   ): Observable<User> {
     console.log('Attempting registration to:', this.apiUrl);
     return this.http
-      .post<AuthResponse>(`${this.apiUrl}/register`, {
-        username,
-        email,
-        password,
-      })
+      .post<AuthResponse>(
+        `${this.apiUrl}/register`,
+        {
+          username,
+          email,
+          password,
+        },
+        {
+          headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+          withCredentials: true,
+        }
+      )
       .pipe(
         tap((response) => {
           if (this.isBrowser) {
