@@ -3,7 +3,7 @@
   publish = "dist/task-management-system.ui/browser"
 
 [build.environment]
-  BACKEND_URL = "https://taskmanagement-dkgy.onrender.com/api"
+  BACKEND_URL = "https://taskmanagement-dkgy.onrender.com"
 
 [[redirects]]
   from = "/*"

@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class BoardService {
-  private apiUrl = `${environment.apiUrl}/boards`;
+  private apiUrl = `${environment.apiUrl}/api/boards`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
