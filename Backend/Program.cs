@@ -81,6 +81,16 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("Access-Control-Allow-Origin", "https://taskmanagementsystem25.netlify.app");
+    context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
+
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation($"Request: {context.Request.Method} {context.Request.Path}");
+
+    await next();
+});
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -98,15 +108,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Add logging middleware
-app.Use(async (context, next) =>
-{
-    context.Response.Headers.Append("Access-Control-Allow-Origin", "https://taskmanagementsystem25.netlify.app");
-    context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
-
-    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-    logger.LogInformation($"Request: {context.Request.Method} {context.Request.Path}");
-
-    await next();
-});
 
 app.Run();
