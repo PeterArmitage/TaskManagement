@@ -75,6 +75,7 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty;
 });
 
+app.UseRouting();
 app.UseCors("AllowSpecificOrigins");
 // Use Authentication & Authorization
 app.UseAuthentication();

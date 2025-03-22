@@ -115,8 +115,15 @@ namespace Backend.Controllers
                 new Claim(ClaimTypes.Email, user.Email)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value ?? "defaultsecretkey12345"));
+            var jwtKey = _configuration.GetSection("AppSettings:Token").Value;
+    
+    
+    if (string.IsNullOrEmpty(jwtKey))
+    {
+        throw new ArgumentNullException("JWT Secret Key is missing in configuration (AppSettings:Token)");
+    }
+
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
