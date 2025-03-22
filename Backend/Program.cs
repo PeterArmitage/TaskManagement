@@ -67,6 +67,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 // CORS must come before other middleware
 
@@ -79,7 +83,7 @@ app.UseSwaggerUI(c =>
 
 app.UseRouting();
 app.UseCors("AllowSpecificOrigins");
-app.UseHttpsRedirection();
+
 // Use Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();
@@ -89,6 +93,9 @@ app.MapControllers();
 // Add logging middleware
 app.Use(async (context, next) =>
 {
+    context.Response.Headers.Add("Access-Control-Allow-Origin", "https://taskmanagementsystem25.netlify.app");
+    context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+    await next();
     var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
     logger.LogInformation($"Request: {context.Request.Method} {context.Request.Path}");
     await next();
