@@ -13,6 +13,8 @@ using DotNetEnv;
 
 // Load environment variables
 DotNetEnv.Env.Load();
+var builder = WebApplication.CreateBuilder(args);
+
 var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 var jwtKey = builder.Configuration.GetSection("AppSettings:Token").Value; 
 var allowedOrigins = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS")?.Split(',') ?? Array.Empty<string>();
@@ -22,7 +24,6 @@ if (string.IsNullOrEmpty(dbConnectionString) || string.IsNullOrEmpty(jwtKey))
     throw new InvalidOperationException("DB_CONNECTION_STRING or JWT_KEY is not set in environment variables.");
 }
 
-var builder = WebApplication.CreateBuilder(args);
 
 // Add CORS policy
 builder.Services.AddCors(options =>
