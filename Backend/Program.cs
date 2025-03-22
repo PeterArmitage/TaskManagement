@@ -30,7 +30,8 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(allowedOrigins)
               .AllowAnyMethod()
               .AllowAnyHeader()
-              .AllowCredentials();
+              .AllowCredentials()
+              .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
     });
 });
 
@@ -65,7 +66,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Use CORS
+// CORS must come before other middleware
 app.UseCors("AllowSpecificOrigins");
 
 app.UseSwagger();
