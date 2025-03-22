@@ -31,7 +31,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(allowedOrigins)
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -76,6 +77,7 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseRouting();
+app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigins");
 // Use Authentication & Authorization
 app.UseAuthentication();
