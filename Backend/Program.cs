@@ -9,21 +9,29 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DotNetEnv;
 
-
-
 // Load environment variables
 DotNetEnv.Env.Load();
-var builder = WebApplication.CreateBuilder(args);
 
+// Create the builder
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    EnvironmentName = Environments.Production
+});
+
+// Load environment variables
 var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-var jwtKey = builder.Configuration.GetSection("AppSettings:Token").Value; 
+var jwtKey = builder.Configuration.GetSection("AppSettings:Token").Value;
 var allowedOrigins = new[] { "https://taskmanagementsystem25.netlify.app" };
 
-if (string.IsNullOrEmpty(dbConnectionString) || string.IsNullOrEmpty(jwtKey))
+// Validate environment variables
+var environment = builder.Environment.EnvironmentName;
+if (environment != "EF")
 {
-    throw new InvalidOperationException("DB_CONNECTION_STRING or JWT_KEY is not set in environment variables.");
+    if (string.IsNullOrEmpty(dbConnectionString) || string.IsNullOrEmpty(jwtKey))
+    {
+        throw new InvalidOperationException("DB_CONNECTION_STRING or JWT_KEY is not set.");
+    }
 }
-
 
 // Add CORS policy
 builder.Services.AddCors(options =>
@@ -44,7 +52,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey ?? throw new InvalidOperationException("JWT_KEY is not set."))),
             ValidateIssuer = false,
             ValidateAudience = false
         };
@@ -52,7 +60,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Add DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(dbConnectionString));
+    options.UseNpgsql(dbConnectionString ?? throw new InvalidOperationException("DB_CONNECTION_STRING is not set.")));
 
 // Add services to the container.
 builder.Services.AddControllers()
@@ -67,12 +75,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// Middleware pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
-
-// CORS must come before other middleware
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -84,7 +92,6 @@ app.UseSwaggerUI(c =>
 app.UseRouting();
 app.UseCors("AllowSpecificOrigins");
 
-// Use Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -93,11 +100,12 @@ app.MapControllers();
 // Add logging middleware
 app.Use(async (context, next) =>
 {
-    context.Response.Headers.Add("Access-Control-Allow-Origin", "https://taskmanagementsystem25.netlify.app");
-    context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-    await next();
+    context.Response.Headers.Append("Access-Control-Allow-Origin", "https://taskmanagementsystem25.netlify.app");
+    context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
+
     var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
     logger.LogInformation($"Request: {context.Request.Method} {context.Request.Path}");
+
     await next();
 });
 

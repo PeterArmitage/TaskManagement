@@ -1,14 +1,32 @@
 using Microsoft.EntityFrameworkCore;
-using Backend.Models;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Mvc;
+using Backend.Models;
 
 namespace Backend.Data
 {
     public class AppDbContext : DbContext
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration? _configuration;
 
+        // Constructor for runtime (used by dependency injection)
+        public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
+            : base(options)
+        {
+            _configuration = configuration;
+        }
+
+        // Parameterless constructor for migrations/design-time
+        public AppDbContext() { }
+
+        // Configure database provider for migrations
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+{
+    if (!optionsBuilder.IsConfigured)
+    {
+        var connectionString = "Host=dpg-cvfgr05ds78s73flnot0-a.oregon-postgres.render.com;Port=5432;Database=taskmanagementdb_i0ad;Username=taskmanagementdb_i0ad_user;Password=30DW0fsbrLi4byiHtX9w3qrhCeQrxwdD;SslMode=Require;Trust Server Certificate=true;";
+        optionsBuilder.UseNpgsql(connectionString);
+    }
+}
         public DbSet<User> Users { get; set; }
         public DbSet<Board> Boards { get; set; }
         public DbSet<List> Lists { get; set; }
@@ -20,12 +38,6 @@ namespace Backend.Data
         public DbSet<TaskChecklistItem> TaskChecklistItems { get; set; }
         public DbSet<TaskLabel> TaskLabels { get; set; }
 
-        public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
-            : base(options)
-        {
-            _configuration = configuration;
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // User - Board relationship
@@ -34,14 +46,14 @@ namespace Backend.Data
                 .WithOne(b => b.User)
                 .HasForeignKey(b => b.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
             // Board - List relationship
             modelBuilder.Entity<Board>()
                 .HasMany(b => b.Lists)
                 .WithOne(l => l.Board)
                 .HasForeignKey(l => l.BoardId)
                 .OnDelete(DeleteBehavior.Cascade);
-                
+
             // List - Card relationship
             modelBuilder.Entity<List>()
                 .HasMany(l => l.Cards)
