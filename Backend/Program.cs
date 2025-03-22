@@ -14,7 +14,7 @@ using DotNetEnv;
 // Load environment variables
 DotNetEnv.Env.Load();
 var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-var jwtKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
+var jwtKey = _configuration["AppSettings:Token"];
 var allowedOrigins = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS")?.Split(',') ?? Array.Empty<string>();
 
 if (string.IsNullOrEmpty(dbConnectionString) || string.IsNullOrEmpty(jwtKey))
@@ -77,8 +77,8 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseRouting();
-app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigins");
+app.UseHttpsRedirection();
 // Use Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();
