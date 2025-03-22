@@ -14,7 +14,7 @@ using DotNetEnv;
 // Load environment variables
 DotNetEnv.Env.Load();
 var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-var jwtKey = _configuration["AppSettings:Token"];
+var jwtKey = builder.Configuration.GetSection("AppSettings:Token").Value; 
 var allowedOrigins = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS")?.Split(',') ?? Array.Empty<string>();
 
 if (string.IsNullOrEmpty(dbConnectionString) || string.IsNullOrEmpty(jwtKey))
