@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DotNetEnv;
+using TaskManagementSystem.API.Middleware;
 
+app.UseMiddleware<CorsMiddleware>();
 // Load environment variables
 DotNetEnv.Env.Load();
 var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
