@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://taskmanagement-dkgy.onrender.com',
+  apiUrl:
+    process.env['BACKEND_URL'] || 'https://taskmanagement-dkgy.onrender.com',
 };
