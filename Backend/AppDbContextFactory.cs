@@ -1,14 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Backend.Data;
+using Microsoft.Extensions.Configuration;
 
 public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
     public AppDbContext CreateDbContext(string[] args)
     {
-        var connectionString = "Host=dpg-cvfgr05ds78s73flnot0-a.oregon-postgres.render.com;Port=5432;Database=taskmanagementdb_i0ad;Username=taskmanagementdb_i0ad_user;Password=30DW0fsbrLi4byiHtX9w3qrhCeQrxwdD;SslMode=Require;";
+        var connectionString = Environment.GetEnvironmentVariable("RENDER_STRING");
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         optionsBuilder.UseNpgsql(connectionString);
-        return new AppDbContext(); 
+
+        // Create a configuration instance
+        var configuration = new ConfigurationBuilder()
+            .AddEnvironmentVariables()
+            .Build();
+
+        return new AppDbContext(optionsBuilder.Options, configuration);
     }
 }

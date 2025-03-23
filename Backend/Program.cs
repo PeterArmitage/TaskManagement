@@ -21,7 +21,7 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 // Load environment variables
 var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 var jwtKey = builder.Configuration.GetSection("AppSettings:Token").Value;
-var allowedOrigins = new[] { "https://taskmanagementsystem25.netlify.app" };
+var allowedOrigins = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS")?.Split(',') ?? Array.Empty<string>();
 
 // Validate environment variables
 var environment = builder.Environment.EnvironmentName;
@@ -83,7 +83,10 @@ if (!app.Environment.IsDevelopment())
 }
 app.Use(async (context, next) =>
 {
-    context.Response.Headers.Append("Access-Control-Allow-Origin", "https://taskmanagementsystem25.netlify.app");
+    if (allowedOrigins.Length > 0)
+    {
+        context.Response.Headers.Append("Access-Control-Allow-Origin", allowedOrigins[0]);
+    }
     context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
 
     var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
