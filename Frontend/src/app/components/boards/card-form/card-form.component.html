@@ -53,11 +53,17 @@
       <p>{{ comment.content }}</p>
       <small>{{ comment.createdAt | date:'medium' }}</small>
     </div>
-    <mat-form-field appearance="fill" class="new-comment">
-      <mat-label>Add a comment</mat-label>
-      <textarea matInput [(ngModel)]="newComment"></textarea>
-    </mat-form-field>
-    <button mat-raised-button color="primary" (click)="addComment()">Add Comment</button>
+    <div *ngIf="!newComment">
+      <button mat-raised-button color="primary" (click)="newComment = ' '">Add Comment</button>
+    </div>
+    <div *ngIf="newComment">
+      <mat-form-field appearance="fill" class="new-comment">
+        <mat-label>Add a comment</mat-label>
+        <textarea matInput [(ngModel)]="newComment"></textarea>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="addComment()">Save Comment</button>
+      <button mat-raised-button color="warn" (click)="newComment = ''">Cancel</button>
+    </div>
   </mat-card-content>
 </mat-card>
 
@@ -75,12 +81,16 @@
       </mat-list-option>
     </mat-selection-list>
 
-    <div class="new-checklist-item">
+    <div *ngIf="!newChecklistItem">
+      <button mat-raised-button color="primary" (click)="newChecklistItem = ' '">Add Checklist Item</button>
+    </div>
+    <div *ngIf="newChecklistItem" class="new-checklist-item">
       <mat-form-field appearance="fill">
         <mat-label>Add checklist item</mat-label>
         <input matInput [(ngModel)]="newChecklistItem" (keyup.enter)="addChecklistItem()">
       </mat-form-field>
-      <button mat-raised-button color="primary" (click)="addChecklistItem()">Add</button>
+      <button mat-raised-button color="primary" (click)="addChecklistItem()">Save</button>
+      <button mat-raised-button color="warn" (click)="newChecklistItem = ''">Cancel</button>
     </div>
   </mat-card-content>
 </mat-card>

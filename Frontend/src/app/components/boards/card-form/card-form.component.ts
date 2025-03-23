@@ -70,7 +70,6 @@ export class CardFormComponent implements OnInit {
     const cardId = this.route.snapshot.params['cardId'];
     console.log('Received card ID:', cardId);
 
-    // Initialize as empty arrays to prevent template errors
     this.checklistItems = [];
     this.comments = [];
 
@@ -130,8 +129,6 @@ export class CardFormComponent implements OnInit {
         next: (savedCard) => {
           console.log('Card saved successfully:', savedCard);
 
-          // If we're in create mode, we need to save the comments and checklist items
-          // after the card is created since we need the card ID
           if (!this.isEditMode && savedCard && savedCard.id) {
             this.saveCommentsAndChecklistItems(savedCard.id);
           }
@@ -159,7 +156,6 @@ export class CardFormComponent implements OnInit {
       });
     }
 
-    // Save any pending checklist items
     if (this.newChecklistItem.trim()) {
       const newItem: ChecklistItem = {
         content: this.newChecklistItem,
