@@ -48,6 +48,8 @@ export class CardFormComponent implements OnInit {
   newComment = '';
   checklistItems: ChecklistItem[] = [];
   newChecklistItem = '';
+  editingCommentId: number | null = null;
+  editingChecklistItemId: number | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -195,17 +197,31 @@ export class CardFormComponent implements OnInit {
     }
 
     const comment = {
+      id: this.editingCommentId,
       content: this.newComment,
       cardId: this.cardId,
     };
 
-    this.commentService.addComment(comment).subscribe({
+    const operation = this.editingCommentId
+      ? this.commentService.updateComment(comment)
+      : this.commentService.addComment(comment);
+
+    operation.subscribe({
       next: (response) => {
-        this.comments.push(response);
-        this.newComment = '';
+        if (this.editingCommentId) {
+          const index = this.comments.findIndex(
+            (c) => c.id === this.editingCommentId
+          );
+          if (index !== -1) {
+            this.comments[index] = response;
+          }
+        } else {
+          this.comments.push(response);
+        }
+        this.cancelEdit();
       },
       error: (err) => {
-        console.error('Error adding comment:', err);
+        console.error('Error adding/updating comment:', err);
         alert(err.message);
       },
     });
@@ -214,17 +230,32 @@ export class CardFormComponent implements OnInit {
   addChecklistItem(): void {
     if (this.newChecklistItem.trim() && this.cardId) {
       const newItem: ChecklistItem = {
+        id: this.editingChecklistItemId,
         content: this.newChecklistItem,
         isCompleted: false,
         cardId: this.cardId,
       };
 
-      this.cardService.createChecklistItem(newItem).subscribe({
+      const operation = this.editingChecklistItemId
+        ? this.cardService.updateChecklistItem(newItem)
+        : this.cardService.createChecklistItem(newItem);
+
+      operation.subscribe({
         next: (item) => {
-          this.checklistItems.push(item);
-          this.newChecklistItem = '';
+          if (this.editingChecklistItemId) {
+            const index = this.checklistItems.findIndex(
+              (i) => i.id === this.editingChecklistItemId
+            );
+            if (index !== -1) {
+              this.checklistItems[index] = item;
+            }
+          } else {
+            this.checklistItems.push(item);
+          }
+          this.cancelEdit();
         },
-        error: (err) => console.error('Error adding checklist item:', err),
+        error: (err) =>
+          console.error('Error adding/updating checklist item:', err),
       });
     }
   }
@@ -250,5 +281,22 @@ export class CardFormComponent implements OnInit {
   ngAfterViewInit(): void {
     console.log('Checklist Items:', this.checklistItems);
     console.log('Comments:', this.comments);
+  }
+
+  startEditComment(comment: Comment): void {
+    this.editingCommentId = comment.id || null;
+    this.newComment = comment.content;
+  }
+
+  startEditChecklistItem(item: ChecklistItem): void {
+    this.editingChecklistItemId = item.id || null;
+    this.newChecklistItem = item.content;
+  }
+
+  cancelEdit(): void {
+    this.editingCommentId = null;
+    this.editingChecklistItemId = null;
+    this.newComment = '';
+    this.newChecklistItem = '';
   }
 }

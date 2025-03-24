@@ -50,8 +50,21 @@
   </mat-card-header>
   <mat-card-content>
     <div *ngFor="let comment of comments" class="comment">
-      <p>{{ comment.content }}</p>
-      <small>{{ comment.createdAt | date:'medium' }}</small>
+      <div *ngIf="editingCommentId !== comment.id; else editComment">
+        <p>{{ comment.content }}</p>
+        <small>{{ comment.createdAt | date:'medium' }}</small>
+        <button mat-icon-button (click)="startEditComment(comment)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+      <ng-template #editComment>
+        <mat-form-field appearance="fill" class="new-comment">
+          <mat-label>Edit comment</mat-label>
+          <textarea matInput [(ngModel)]="newComment"></textarea>
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="addComment()">Save</button>
+        <button mat-raised-button color="warn" (click)="cancelEdit()">Cancel</button>
+      </ng-template>
     </div>
     <div *ngIf="!newComment">
       <button mat-raised-button color="primary" (click)="newComment = ' '">Add Comment</button>
@@ -74,10 +87,25 @@
   <mat-card-content>
     <mat-selection-list #checklist>
       <mat-list-option *ngFor="let item of checklistItems" [selected]="item.isCompleted" (click)="toggleChecklistItem(item)">
-        {{ item.content }}
-        <button mat-icon-button (click)="deleteChecklistItem(item.id!); $event.stopPropagation()">
-          <mat-icon>delete</mat-icon>
-        </button>
+        <div *ngIf="editingChecklistItemId !== item.id; else editChecklistItem">
+          <span>{{ item.content }}</span>
+          <div>
+            <button mat-icon-button (click)="startEditChecklistItem(item); $event.stopPropagation()">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="deleteChecklistItem(item.id!); $event.stopPropagation()">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+        <ng-template #editChecklistItem>
+          <mat-form-field appearance="fill">
+            <mat-label>Edit checklist item</mat-label>
+            <input matInput [(ngModel)]="newChecklistItem" (keyup.enter)="addChecklistItem()">
+          </mat-form-field>
+          <button mat-raised-button color="primary" (click)="addChecklistItem()">Save</button>
+          <button mat-raised-button color="warn" (click)="cancelEdit()">Cancel</button>
+        </ng-template>
       </mat-list-option>
     </mat-selection-list>
 

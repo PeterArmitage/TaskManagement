@@ -100,5 +100,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    
+    &.mat-list-item-selected {
+      text-decoration: line-through;
+    }
   }
 }
