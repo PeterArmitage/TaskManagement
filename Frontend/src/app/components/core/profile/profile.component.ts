@@ -60,7 +60,6 @@ export class ProfileComponent implements OnInit {
         email: this.user.email,
       });
 
-      // Set profile picture if available
       if (this.user.profilePicture) {
         this.previewUrl = this.user.profilePicture;
       }
@@ -72,7 +71,6 @@ export class ProfileComponent implements OnInit {
     this.updateSuccess = false;
     this.updateError = '';
 
-    // Reset file selection when canceling edit
     if (!this.isEditMode) {
       this.selectedFile = null;
       this.previewUrl = this.user?.profilePicture || null;
@@ -84,7 +82,6 @@ export class ProfileComponent implements OnInit {
     if (input.files && input.files.length) {
       this.selectedFile = input.files[0];
 
-      // Create preview
       const reader = new FileReader();
       reader.onload = () => {
         this.previewUrl = reader.result as string;
@@ -95,19 +92,16 @@ export class ProfileComponent implements OnInit {
 
   onSubmit(): void {
     if (this.profileForm.valid && this.user) {
-      // In a real application, you'd implement a user update service
-      // For this demo, we'll just simulate a successful update
       setTimeout(() => {
         this.user = {
           id: this.user!.id,
           username: this.profileForm.get('username')?.value,
           email: this.profileForm.get('email')?.value,
           token: this.user!.token,
-          // Set the profile picture from the preview URL
+
           profilePicture: this.previewUrl || this.user?.profilePicture,
         };
 
-        // Save user to local storage
         localStorage.setItem('currentUser', JSON.stringify(this.user));
 
         this.updateSuccess = true;

@@ -38,7 +38,7 @@ export class BoardFormComponent {
   onSubmit(): void {
     if (this.boardForm.valid) {
       this.boardService.createBoard(this.boardForm.value).subscribe(() => {
-        this.router.navigate(['/boards']); // Navigate back to the board list
+        this.router.navigate(['/boards']);
       });
     }
   }

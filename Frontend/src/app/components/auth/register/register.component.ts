@@ -114,7 +114,6 @@ export class RegisterComponent {
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
 
-    // Redirect if already logged in
     if (this.authService.isLoggedIn()) {
       this.router.navigate(['/']);
     }

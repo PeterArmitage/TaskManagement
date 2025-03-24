@@ -9,6 +9,11 @@ import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { ListService } from '../../../services/list.service';
 
+/**
+ * CardComponent displays and manages cards within a specific list.
+ * Handles card viewing, navigation to edit mode, and deletion.
+ * Also provides navigation back to the parent board view.
+ */
 @Component({
   selector: 'app-card',
   standalone: true,

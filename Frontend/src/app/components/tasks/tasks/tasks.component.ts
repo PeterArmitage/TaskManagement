@@ -35,6 +35,7 @@ import {
   TaskChecklistItem,
   TaskLabel,
 } from '../../../models/task-item.model';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-tasks',
@@ -95,6 +96,7 @@ export class TasksComponent implements OnInit {
 
   constructor(
     private taskService: TaskService,
+    private authService: AuthService,
     private fb: FormBuilder,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
@@ -134,7 +136,7 @@ export class TasksComponent implements OnInit {
       this.fb.group({
         content: ['', Validators.required],
         createdAt: [new Date().toISOString()],
-        author: ['Current User'], // In a real app, get from auth service
+        author: [this.authService.getCurrentUser()?.username || 'Anonymous'],
       })
     );
   }
@@ -163,12 +165,10 @@ export class TasksComponent implements OnInit {
     );
 
     if (labelIndex === -1) {
-      // Add label
       this.taskForm.patchValue({
         labels: [...currentLabels, label],
       });
     } else {
-      // Remove label
       const newLabels = [...currentLabels];
       newLabels.splice(labelIndex, 1);
       this.taskForm.patchValue({
@@ -190,7 +190,6 @@ export class TasksComponent implements OnInit {
         tap((response: any) => {
           console.log('Raw API response:', response);
 
-          // Handle potential JSON format with $values property
           let tasksArray: TaskItem[] = [];
           if (response && response['$values']) {
             tasksArray = response['$values'];
@@ -238,7 +237,6 @@ export class TasksComponent implements OnInit {
       labels: [],
     });
 
-    // Reset FormArrays
     while (this.commentsArray.length) {
       this.commentsArray.removeAt(0);
     }
@@ -261,7 +259,6 @@ export class TasksComponent implements OnInit {
         labels: task.labels || [],
       });
 
-      // Add comments if available
       if (task.comments && task.comments.length > 0) {
         task.comments.forEach((comment) => {
           this.commentsArray.push(
@@ -274,7 +271,6 @@ export class TasksComponent implements OnInit {
         });
       }
 
-      // Add checklist items if available
       if (task.checklist && task.checklist.length > 0) {
         task.checklist.forEach((item) => {
           this.checklistArray.push(

@@ -33,7 +33,7 @@ export class BoardComponent implements OnInit {
   deleteBoard(id: number): void {
     if (confirm('Are you sure you want to delete this board?')) {
       this.boardService.deleteBoard(id).subscribe(() => {
-        this.loadBoards(); // Reload the boards after deletion
+        this.loadBoards();
       });
     }
   }

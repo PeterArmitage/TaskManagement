@@ -18,6 +18,12 @@ import { ChecklistItem } from '../../../models/checklist-item.model';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 
+/**
+ * CardFormComponent handles the creation and editing of cards,
+ * including managing associated comments and checklist items.
+ * Provides form controls for card details and UI for adding/editing
+ * comments and checklist items.
+ */
 @Component({
   selector: 'app-card-form',
   standalone: true,
@@ -146,7 +152,6 @@ export class CardFormComponent implements OnInit {
   }
 
   saveCommentsAndChecklistItems(cardId: number): void {
-    // Save any pending comments
     if (this.newComment.trim()) {
       const comment = {
         content: this.newComment,
