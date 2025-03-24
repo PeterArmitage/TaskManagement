@@ -68,5 +68,34 @@ namespace Backend.Controllers
                 .OrderByDescending(c => c.CreatedAt)
                 .ToListAsync();
         }
+
+        // PUT: api/comments/5
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Comment>> UpdateComment(int id, [FromBody] Comment comment)
+        {
+            if (id != comment.Id)
+            {
+                return BadRequest("ID mismatch");
+            }
+
+            var existingComment = await _context.Comments.FindAsync(id);
+            if (existingComment == null)
+            {
+                return NotFound();
+            }
+
+            existingComment.Content = comment.Content;
+            existingComment.CardId = comment.CardId;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(existingComment);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

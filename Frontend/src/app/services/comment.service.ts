@@ -78,6 +78,12 @@ export class CommentService {
     );
   }
 
+  updateComment(comment: Comment): Observable<Comment> {
+    return this.http
+      .put<Comment>(`${this.apiUrl}/${comment.id}`, comment)
+      .pipe(catchError(this.handleError));
+  }
+
   private handleError(error: HttpErrorResponse) {
     console.error('An error occurred:', error);
     let errorMessage = 'Something went wrong; please try again later.';

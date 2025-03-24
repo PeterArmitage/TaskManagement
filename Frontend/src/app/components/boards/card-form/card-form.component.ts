@@ -48,8 +48,8 @@ export class CardFormComponent implements OnInit {
   newComment = '';
   checklistItems: ChecklistItem[] = [];
   newChecklistItem = '';
-  editingCommentId: number | null = null;
-  editingChecklistItemId: number | null = null;
+  editingCommentId: number | undefined = undefined;
+  editingChecklistItemId: number | undefined = undefined;
 
   constructor(
     private fb: FormBuilder,
@@ -284,18 +284,18 @@ export class CardFormComponent implements OnInit {
   }
 
   startEditComment(comment: Comment): void {
-    this.editingCommentId = comment.id || null;
+    this.editingCommentId = comment.id;
     this.newComment = comment.content;
   }
 
   startEditChecklistItem(item: ChecklistItem): void {
-    this.editingChecklistItemId = item.id || null;
+    this.editingChecklistItemId = item.id;
     this.newChecklistItem = item.content;
   }
 
   cancelEdit(): void {
-    this.editingCommentId = null;
-    this.editingChecklistItemId = null;
+    this.editingCommentId = undefined;
+    this.editingChecklistItemId = undefined;
     this.newComment = '';
     this.newChecklistItem = '';
   }
